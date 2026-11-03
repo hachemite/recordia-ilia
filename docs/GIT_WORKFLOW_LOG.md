@@ -22,14 +22,14 @@ This project adheres to the **Feature Branch Workflow**:
 
 | Issue ID | Feature Title | Assignee | Target Branch | Status |
 |:---:|:---|:---:|:---|:---:|
-| **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **CLOSED** (Commit 4d4966e / Merge d0735a3) |
+| **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **CLOSED** (Commit `4d4966e` / Merge `d0735a3`) |
 | **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **CLOSED** (PR #9) |
-| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **CLOSED** (Commit e923205 / Merge e49e456) |
-| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **CLOSED** (Commit b3864cf / Merge d2ab6c1) |
-| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | **CLOSED** (Commit ee15286 / Merge 1b0f505) |
-| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | **CLOSED** (Merge e49e456) |
-| **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | **In Progress** |
-| **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | Queued |
+| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **CLOSED** (Commit `e923205` / Merge `e49e456`) |
+| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **CLOSED** (Commit `b3864cf` / Merge `d2ab6c1`) |
+| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | **CLOSED** (Commit `ee15286` / Merge `1b0f505`) |
+| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | **CLOSED** (Merge `e49e456`) |
+| **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | **CLOSED** (Commit `93805f8` / Merge `798cf8a`) |
+| **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | **In Progress** |
 
 ---
 
@@ -343,3 +343,39 @@ Ran 12 tests in 0.976s
 
 OK
 ```
+
+#### 6.4 Staging, Committing, Pushing & Merging
+```bash
+git add .
+git commit -m "test(core): implement comprehensive unit and integration test suite (fixes #7)"
+git push -u origin feature/test-features
+git checkout main
+git pull origin main
+git merge --no-ff feature/test-features -m "Merge branch 'feature/test-features' (Closes #7)"
+git push origin main
+```
+**Terminal Output**:
+```text
+[feature/test-features 93805f8] test(core): implement comprehensive unit and integration test suite (fixes #7)
+To https://github.com/hachemite/recordia-ilia.git
+   1b0f505..798cf8a  main -> main
+```
+
+---
+
+### Step 7: Feature #8 - Documentation, Setup Guide & Report (Closes #8)
+
+#### 7.1 Branch Creation
+**Action**: Create and switch to isolated branch `feature/documentation-and-report`.
+```bash
+git checkout -b feature/documentation-and-report
+```
+**Terminal Output**:
+```text
+Switched to a new branch 'feature/documentation-and-report'
+```
+
+#### 7.2 Changes Implemented
+- Rewrote `README.md` with full badges, team credits, architectural overview, tech stack, installation instructions, usage guidelines, hotkeys table, and testing commands.
+- Created `requirements.txt` listing all necessary Python packages (`pillow`, `mss`, `opencv-python`, `pynput`, `numpy`).
+- Finalized `docs/GIT_WORKFLOW_LOG.md` complete with all command inputs, terminal responses, and Git Flow explanations.
