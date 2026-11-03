@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config.settings import Settings
 from core.hotkeys import HotkeyManager
 from storage.file_manager import FileManager
+from capture.screenshot import ScreenshotEngine
 from ui.main_window import MainWindow
 from ui.settings_window import SettingsWindow
 
@@ -20,9 +21,13 @@ class RecordiaApp:
     def __init__(self):
         self.settings = Settings()
         self.file_manager = FileManager(self.settings.get("save_directory"))
+        self.screenshot_engine = ScreenshotEngine(
+            self.file_manager,
+            default_format=self.settings.get("screenshot_format", "png")
+        )
         self.is_recording = False
 
-        # Placeholder callbacks (to be linked with capture engine)
+        # Placeholder callbacks (to be linked with video engine)
         self.screenshot_callback = self._handle_screenshot
         self.start_record_callback = self._handle_start_record
         self.stop_record_callback = self._handle_stop_record
@@ -50,15 +55,20 @@ class RecordiaApp:
     def _on_settings_updated(self):
         new_dir = self.settings.get("save_directory")
         self.file_manager.set_base_directory(new_dir)
+        self.screenshot_engine.default_format = self.settings.get("screenshot_format", "png")
         self.window.set_status("Settings updated")
 
     def _open_captures_folder(self):
         self.file_manager.open_captures_folder()
         self.window.set_status("Opened captures folder")
 
-    def _handle_screenshot(self):
-        filepath = self.file_manager.generate_screenshot_path(self.settings.get("screenshot_format", "png"))
-        print(f"[Recordia] Screenshot target: {filepath}")
+    def _handle_screenshot(self) -> str:
+        fmt = self.settings.get("screenshot_format", "png")
+        saved_file = self.screenshot_engine.capture_fullscreen(fmt=fmt)
+        filename = os.path.basename(saved_file)
+        print(f"[Recordia] Screenshot saved to: {saved_file}")
+        self.window.set_status(f"Saved: {filename}")
+        return saved_file
 
     def _handle_start_record(self):
         filepath = self.file_manager.generate_recording_path(self.settings.get("video_format", "mp4"))
@@ -71,8 +81,9 @@ class RecordiaApp:
 
     def _on_hotkey_screenshot(self):
         print("[Recordia] Hotkey detected: Screenshot")
-        self._handle_screenshot()
-        self.window.set_status("Screenshot taken (Hotkey)")
+        saved_file = self._handle_screenshot()
+        filename = os.path.basename(saved_file)
+        self.window.set_status(f"Saved: {filename} (Hotkey)")
 
     def _on_hotkey_toggle_record(self):
         print("[Recordia] Hotkey detected: Toggle Recording")

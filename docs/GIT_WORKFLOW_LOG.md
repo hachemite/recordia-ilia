@@ -24,10 +24,10 @@ This project adheres to the **Feature Branch Workflow**:
 |:---:|:---|:---:|:---|:---:|
 | **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **CLOSED** (Commit 4d4966e / Merge d0735a3) |
 | **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **CLOSED** (PR #9) |
-| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **In Progress** |
-| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | Queued |
+| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **CLOSED** (Commit e923205 / Merge e49e456) |
+| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **In Progress** |
 | **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | Queued |
-| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 (Covered) | **In Progress** |
+| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | **CLOSED** (Merge e49e456) |
 | **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | Queued |
 | **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | Queued |
 
@@ -135,3 +135,65 @@ Switched to a new branch 'feature/file-saving-and-settings'
 - Created `src/ui/settings_window.py` with `SettingsWindow` GUI modal for folder selection (`filedialog`), screenshot format choices (PNG/JPG), and recording framerate settings (15/30/60 FPS).
 - Enhanced `src/ui/main_window.py` with quick-access buttons for "Open Captures 📁" and "Settings ⚙️".
 - Updated `src/main.py` orchestrator linking settings updates dynamically to storage paths.
+
+#### 3.3 Staging and Committing
+**Action**: Stage and commit file saving and settings modules, referencing issues #3 and #6.
+```bash
+git add .
+git commit -m "feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)"
+```
+**Terminal Output**:
+```text
+[feature/file-saving-and-settings e923205] feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)
+ 6 files changed, 240 insertions(+), 19 deletions(-)
+ create mode 100644 src/storage/__init__.py
+ create mode 100644 src/storage/file_manager.py
+ create mode 100644 src/ui/settings_window.py
+```
+
+#### 3.4 Publishing Feature Branch Upstream
+**Action**: Push feature branch to `origin`.
+```bash
+git push -u origin feature/file-saving-and-settings
+```
+**Terminal Output**:
+```text
+branch 'feature/file-saving-and-settings' set up to track 'origin/feature/file-saving-and-settings'.
+To https://github.com/hachemite/recordia-ilia.git
+ * [new branch]      feature/file-saving-and-settings -> feature/file-saving-and-settings
+```
+
+#### 3.5 Merging into Main & Auto-Closing Issues #3 and #6
+**Action**: Switch to `main`, merge `--no-ff`, and push upstream.
+```bash
+git checkout main
+git pull origin main
+git merge --no-ff feature/file-saving-and-settings -m "Merge branch 'feature/file-saving-and-settings' (Closes #3, Closes #6)"
+git push origin main
+```
+**Terminal Output**:
+```text
+Merge made by the 'ort' strategy.
+To https://github.com/hachemite/recordia-ilia.git
+   d0735a3..e49e456  main -> main
+```
+
+---
+
+### Step 4: Feature #4 - Screenshot Capture Engine (Closes #4)
+
+#### 4.1 Branch Creation
+**Action**: Create and switch to isolated branch `feature/screenshot-capture`.
+```bash
+git checkout -b feature/screenshot-capture
+```
+**Terminal Output**:
+```text
+Switched to a new branch 'feature/screenshot-capture'
+```
+
+#### 4.2 Changes Implemented
+- Created `src/capture/screenshot.py` implementing `ScreenshotEngine` inheriting from `BaseScreenshotEngine`.
+- Supports fullscreen capture and region capture with Pillow and mss.
+- Added graceful headless / CI fallback for systems without active display devices.
+- Integrated screenshot trigger into `RecordiaApp` in `src/main.py`.
