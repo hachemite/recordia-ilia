@@ -1,7 +1,7 @@
 """
 Main entry point for RecordiaILIA application.
-Integrates UI, automated step recording (Manual, On Click, Periodic Timer),
-settings, file manager, hotkeys, screenshot, and screen recording engines.
+Integrates UI, automated step recording, step description review editor,
+settings with custom hotkey configuration, file manager, and video recording.
 """
 
 import sys
@@ -22,6 +22,7 @@ from capture.recorder import ScreenRecorder
 from ui.main_window import MainWindow
 from ui.settings_window import SettingsWindow
 from ui.step_dialog import StepDialog
+from ui.step_editor_window import StepEditorWindow
 
 
 class RecordiaApp:
@@ -44,36 +45,69 @@ class RecordiaApp:
         self.auto_stepper = AutoStepper(step_trigger_callback=self._on_auto_trigger)
         self.quick_mode = False
 
+        # Load hotkeys
+        current_hotkeys = self.settings.get("hotkeys", {})
+        self.step_hotkey = current_hotkeys.get("screenshot", "<ctrl>+<shift>+s")
+        self.video_hotkey = current_hotkeys.get("toggle_record", "<ctrl>+<shift>+r")
+
         # Initialize UI
         self.window = MainWindow(
             on_record_step=self._handle_record_step,
             on_finish_session=self._handle_finish_session,
             on_toggle_auto=self._handle_toggle_auto,
+            on_open_step_editor=self._open_step_editor,
             on_screenshot=self._handle_screenshot,
             on_start_record=self._handle_start_record,
             on_stop_record=self._handle_stop_record,
             on_open_settings=self._open_settings,
             on_open_captures=self._open_captures_folder,
-            on_close=self.cleanup
+            on_close=self.cleanup,
+            step_hotkey=self.step_hotkey,
+            video_hotkey=self.video_hotkey
         )
 
         # Initialize hotkey manager
         hotkey_bindings = {
-            self.settings.get("hotkeys", {}).get("screenshot", "<ctrl>+<shift>+s"): self._on_hotkey_record_step,
-            self.settings.get("hotkeys", {}).get("toggle_record", "<ctrl>+<shift>+r"): self._on_hotkey_toggle_record
+            self.step_hotkey: self._on_hotkey_record_step,
+            self.video_hotkey: self._on_hotkey_toggle_record
         }
         self.hotkeys = HotkeyManager(hotkey_bindings)
 
     def _open_settings(self):
         SettingsWindow(self.window.root, self.settings, on_save=self._on_settings_updated)
 
+    def _open_step_editor(self):
+        if self.session_manager.step_count == 0:
+            self.window.set_status("No steps in session to review yet.")
+            return
+        StepEditorWindow(self.window.root, self.session_manager, on_updated=self._on_step_updated)
+
+    def _on_step_updated(self):
+        self.window.set_status("Step description updated in session.")
+
     def _on_settings_updated(self):
         new_dir = self.settings.get("save_directory")
         self.file_manager.set_base_directory(new_dir)
-        self.session_manager = SessionManager(new_dir)
+        self.session_manager.base_dir = self.file_manager.base_dir
         self.screenshot_engine.default_format = self.settings.get("screenshot_format", "png")
         self.recorder.fps = int(self.settings.get("video_fps", 30))
-        self.window.set_status("Settings updated")
+
+        # Dynamically apply new hotkeys
+        current_hotkeys = self.settings.get("hotkeys", {})
+        self.step_hotkey = current_hotkeys.get("screenshot", "<ctrl>+<shift>+s")
+        self.video_hotkey = current_hotkeys.get("toggle_record", "<ctrl>+<shift>+r")
+
+        if hasattr(self, "hotkeys"):
+            self.hotkeys.stop()
+            self.hotkeys.key_bindings = {
+                self.step_hotkey: self._on_hotkey_record_step,
+                self.video_hotkey: self._on_hotkey_toggle_record
+            }
+            self.hotkeys.start()
+
+        self.window.update_hotkey_labels(self.step_hotkey, self.video_hotkey)
+        self.window.set_status("Settings and custom hotkeys updated")
+        print(f"[Recordia] Hotkeys re-registered: Step={self.step_hotkey}, Video={self.video_hotkey}")
 
     def _open_captures_folder(self):
         if self.session_manager.current_session_dir and os.path.exists(self.session_manager.current_session_dir):
