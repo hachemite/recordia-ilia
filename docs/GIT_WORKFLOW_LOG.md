@@ -12,8 +12,9 @@
 This project adheres to the **Feature Branch Workflow**:
 - `main`: Production-ready, stable codebase.
 - `feature/<feature-name>`: Dedicated branches for each specific feature or GitHub issue.
-- Direct pushes to `main` are restricted in favor of **Pull Requests** (or documented fast-forward/rebase merges) referencing issue numbers (`Closes #X`, `Fixes #X`).
-- Explicit tracking of all git operations (pull, branch, add, commit, push, merge, prune).
+- Direct pushes to `main` without feature branches are avoided.
+- Merge commits preserve history (`--no-ff`) and link issues via `Closes #X` / `Fixes #X`.
+- Remote tracking branches are maintained on GitHub (`origin`).
 
 ---
 
@@ -21,12 +22,12 @@ This project adheres to the **Feature Branch Workflow**:
 
 | Issue ID | Feature Title | Assignee | Target Branch | Status |
 |:---:|:---|:---:|:---|:---:|
-| **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **In Progress** |
-| **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **Closed** (PR #9) |
-| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | Queued |
+| **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **CLOSED** (Commit 4d4966e / Merge d0735a3) |
+| **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **CLOSED** (PR #9) |
+| **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **In Progress** |
 | **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | Queued |
 | **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | Queued |
-| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | Queued |
+| **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 (Covered) | **In Progress** |
 | **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | Queued |
 | **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | Queued |
 
@@ -100,3 +101,37 @@ To https://github.com/hachemite/recordia-ilia.git
  * [new branch]      feature/architecture-and-hotkeys -> feature/architecture-and-hotkeys
 ```
 
+#### 2.5 Merging into Main & Auto-Closing Issue #1
+**Action**: Switch to `main`, ensure latest status, and merge with `--no-ff` preserving history graph.
+```bash
+git checkout main
+git pull origin main
+git merge --no-ff feature/architecture-and-hotkeys -m "Merge branch 'feature/architecture-and-hotkeys' (Closes #1)"
+git push origin main
+```
+**Terminal Output**:
+```text
+Merge made by the 'ort' strategy.
+To https://github.com/hachemite/recordia-ilia.git
+   f0d65b2..d0735a3  main -> main
+```
+
+---
+
+### Step 3: Feature #3 & #6 - File Saving & Settings Dialog (Closes #3, Closes #6)
+
+#### 3.1 Branch Creation
+**Action**: Create and switch to isolated branch `feature/file-saving-and-settings` branched from updated `main`.
+```bash
+git checkout -b feature/file-saving-and-settings
+```
+**Terminal Output**:
+```text
+Switched to a new branch 'feature/file-saving-and-settings'
+```
+
+#### 3.2 Changes Implemented
+- Created `src/storage/file_manager.py` implementing `FileManager` with automatic directory structure creation (`Screenshots/` and `Recordings/`), unique timestamped naming, and cross-platform folder opener.
+- Created `src/ui/settings_window.py` with `SettingsWindow` GUI modal for folder selection (`filedialog`), screenshot format choices (PNG/JPG), and recording framerate settings (15/30/60 FPS).
+- Enhanced `src/ui/main_window.py` with quick-access buttons for "Open Captures 📁" and "Settings ⚙️".
+- Updated `src/main.py` orchestrator linking settings updates dynamically to storage paths.
