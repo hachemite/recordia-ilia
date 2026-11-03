@@ -10,8 +10,8 @@
 
 ## Authors & Roles
 
-- **Hachem Squalli** (`hachemite`): Architecture, UI initial prototype, Core Capture/Recording Logic.
-- **Yassine Ouali** (`Ysn-Ir`): Modular Architecture, Global Hotkeys (`pynput`), Storage & Settings Management, OpenCV Video Recording Engine, Automated Event-Driven Steps Recorder (On-Click & Periodic Timer), Step Review/Editor, and Comprehensive Test Suite.
+- **Yassine Ouali** (`Ysn-Ir`): Project Architecture, Core Capture & Video Recording Engines (Pillow/mss + OpenCV), Global Hotkeys (`pynput`), Storage & Settings Management, Automated Event-Driven Steps Recorder (On-Click & Periodic Timer), Step Review/Editor, and Comprehensive Test Suite.
+- **Hachem Squalli** (`hachemite`): UI Design & Initial Tkinter Prototype, Documentation & Academic Reports, Git/GitHub Workflow Orchestration, and Project Coordination.
 
 ---
 
@@ -76,6 +76,7 @@ recordia-ilia/
 │   ├── test_settings.py
 │   └── test_window_info.py
 ├── .gitignore                    # Ignored artifacts, virtual environments, captures
+├── LICENSE                       # MIT license
 ├── requirements.txt              # Project dependencies
 └── README.md                     # Documentation and setup guide
 ```
