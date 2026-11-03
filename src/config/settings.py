@@ -31,7 +31,7 @@ class Settings:
 
     def load(self):
         """Load configuration from JSON file if available."""
-        if os.path.exists(self.config_path):
+        if os.path.exists(self.config_path) and os.path.getsize(self.config_path) > 0:
             try:
                 with open(self.config_path, "r", encoding="utf-8") as f:
                     saved = json.load(f)

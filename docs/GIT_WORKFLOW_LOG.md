@@ -26,9 +26,9 @@ This project adheres to the **Feature Branch Workflow**:
 | **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **CLOSED** (PR #9) |
 | **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **CLOSED** (Commit e923205 / Merge e49e456) |
 | **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **CLOSED** (Commit b3864cf / Merge d2ab6c1) |
-| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | **In Progress** |
+| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | **CLOSED** (Commit ee15286 / Merge 1b0f505) |
 | **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | **CLOSED** (Merge e49e456) |
-| **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | Queued |
+| **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | **In Progress** |
 | **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | Queued |
 
 ---
@@ -257,3 +257,89 @@ Switched to a new branch 'feature/screen-recording'
 - Continuous background frame capture and video encoding using `cv2.VideoWriter` (`mp4v` codec) and `mss`.
 - Non-blocking execution via worker thread with synchronization locks and clean stop/join mechanisms.
 - Wired Start/Stop recording actions into `RecordiaApp` and UI status feedback in `src/main.py`.
+
+#### 5.3 Staging and Committing
+**Action**: Stage and commit screen recording engine linking Issue #5.
+```bash
+git add .
+git commit -m "feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)"
+```
+**Terminal Output**:
+```text
+[feature/screen-recording ee15286] feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)
+ 4 files changed, 235 insertions(+), 14 deletions(-)
+ create mode 100644 src/capture/recorder.py
+```
+
+#### 5.4 Publishing Feature Branch Upstream
+**Action**: Push feature branch to `origin`.
+```bash
+git push -u origin feature/screen-recording
+```
+**Terminal Output**:
+```text
+branch 'feature/screen-recording' set up to track 'origin/feature/screen-recording'.
+To https://github.com/hachemite/recordia-ilia.git
+ * [new branch]      feature/screen-recording -> feature/screen-recording
+```
+
+#### 5.5 Merging into Main & Auto-Closing Issue #5
+**Action**: Switch to `main`, merge `--no-ff`, and push upstream.
+```bash
+git checkout main
+git pull origin main
+git merge --no-ff feature/screen-recording -m "Merge branch 'feature/screen-recording' (Closes #5)"
+git push origin main
+```
+**Terminal Output**:
+```text
+Merge made by the 'ort' strategy.
+To https://github.com/hachemite/recordia-ilia.git
+   d2ab6c1..1b0f505  main -> main
+```
+
+---
+
+### Step 6: Feature #7 - Comprehensive Test Suite (Closes #7)
+
+#### 6.1 Branch Creation
+**Action**: Create and switch to isolated branch `feature/test-features`.
+```bash
+git checkout -b feature/test-features
+```
+**Terminal Output**:
+```text
+Switched to a new branch 'feature/test-features'
+```
+
+#### 6.2 Changes Implemented
+- Created `tests/test_settings.py`: tests configuration loading, default values, and persistent updates.
+- Created `tests/test_file_manager.py`: tests directory structure generation, timestamped naming for screenshots and recordings, and path manipulation.
+- Created `tests/test_hotkeys.py`: tests global hotkey dictionary bindings and listener lifecycle.
+- Created `tests/test_screenshot.py`: tests fullscreen and region capture execution and disk output verification.
+- Created `tests/test_recorder.py`: tests start/stop recording lifecycle, thread execution, and valid video file generation.
+
+#### 6.3 Test Suite Execution
+```bash
+python -m unittest discover -s tests -v
+```
+**Terminal Output**:
+```text
+test_directory_creation (test_file_manager.TestFileManager.test_directory_creation) ... ok
+test_generate_recording_path (test_file_manager.TestFileManager.test_generate_recording_path) ... ok
+test_generate_screenshot_path (test_file_manager.TestFileManager.test_generate_screenshot_path) ... ok
+test_update_base_directory (test_file_manager.TestFileManager.test_update_base_directory) ... ok
+test_init_and_bindings (test_hotkeys.TestHotkeyManager.test_init_and_bindings) ... ok
+test_register_hotkey (test_hotkeys.TestHotkeyManager.test_register_hotkey) ... ok
+test_stop_when_not_started (test_hotkeys.TestHotkeyManager.test_stop_when_not_started) ... ok
+test_start_and_stop_recording (test_recorder.TestScreenRecorder.test_start_and_stop_recording) ... ok
+test_capture_fullscreen (test_screenshot.TestScreenshotEngine.test_capture_fullscreen) ... ok
+test_capture_region (test_screenshot.TestScreenshotEngine.test_capture_region) ... ok
+test_default_values (test_settings.TestSettings.test_default_values) ... ok
+test_set_and_save_persistence (test_settings.TestSettings.test_set_and_save_persistence) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.976s
+
+OK
+```
