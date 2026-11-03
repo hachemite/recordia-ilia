@@ -1,7 +1,7 @@
 """
 Main entry point for RecordiaILIA application.
-Integrates UI, step recording sessions, settings, file manager, hotkeys, screenshot,
-and screen recording engines.
+Integrates UI, automated step recording (Manual, On Click, Periodic Timer),
+settings, file manager, hotkeys, screenshot, and screen recording engines.
 """
 
 import sys
@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config.settings import Settings
 from core.hotkeys import HotkeyManager
 from core.window_info import get_active_window_info
+from core.auto_stepper import AutoStepper, TriggerMode
 from storage.file_manager import FileManager
 from storage.session_manager import SessionManager
 from capture.screenshot import ScreenshotEngine
@@ -40,12 +41,14 @@ class RecordiaApp:
             video_format=self.settings.get("video_format", "mp4")
         )
 
+        self.auto_stepper = AutoStepper(step_trigger_callback=self._on_auto_trigger)
         self.quick_mode = False
 
         # Initialize UI
         self.window = MainWindow(
             on_record_step=self._handle_record_step,
             on_finish_session=self._handle_finish_session,
+            on_toggle_auto=self._handle_toggle_auto,
             on_screenshot=self._handle_screenshot,
             on_start_record=self._handle_start_record,
             on_stop_record=self._handle_stop_record,
@@ -84,20 +87,15 @@ class RecordiaApp:
         self.window.set_status("Opened captures folder")
 
     def _handle_record_step(self):
-        """Captures a structured step with app name, timestamp, and description."""
-        # Ensure active session
+        """Captures a single manual step with optional dialog prompt."""
         if not self.session_manager.is_active:
             proj_name = self.window.get_project_name()
             self.session_manager.start_session(proj_name)
 
-        # Detect active window details
         window_info = get_active_window_info()
         next_step = self.session_manager.step_count + 1
-
-        # Capture frame
         image = self.screenshot_engine._grab_screen()
 
-        # Prompt for description if not in quick mode
         desc = ""
         if not self.quick_mode:
             dialog = StepDialog(self.window.root, next_step, window_info)
@@ -111,10 +109,43 @@ class RecordiaApp:
         step = self.session_manager.record_step(image, description=desc, window_info=window_info)
         self.window.update_step_count(self.session_manager.step_count)
         self.window.set_status(f"Step #{step.step_number} saved: {step.app_name}")
-        print(f"[Recordia] Recorded Step #{step.step_number} in {step.app_name} ({step.timestamp})")
+        print(f"[Recordia] Manual Step #{step.step_number} in {step.app_name} ({step.timestamp})")
+
+    def _on_auto_trigger(self, description: str, meta: dict):
+        """Background callback invoked automatically by AutoStepper on click or timer."""
+        if not self.session_manager.is_active:
+            proj_name = self.window.get_project_name()
+            self.session_manager.start_session(proj_name)
+
+        window_info = get_active_window_info()
+        image = self.screenshot_engine._grab_screen()
+
+        step = self.session_manager.record_step(image, description=description, window_info=window_info)
+        self.window.update_step_count(self.session_manager.step_count)
+        self.window.set_status(f"Auto Step #{step.step_number}: {step.app_name} - {description}")
+        print(f"[Recordia] Auto Step #{step.step_number} ({step.app_name}): {description}")
+
+    def _handle_toggle_auto(self, mode: str, interval: float):
+        """Starts or stops automated background step recording."""
+        if mode == "stop":
+            self.auto_stepper.stop()
+            self.window.set_status("Auto-recording stopped")
+            print("[Recordia] Auto-recording stopped.")
+        else:
+            if not self.session_manager.is_active:
+                proj_name = self.window.get_project_name()
+                self.session_manager.start_session(proj_name)
+
+            trig_mode = TriggerMode.ON_CLICK if mode == "on_click" else TriggerMode.PERIODIC
+            self.auto_stepper.start(trig_mode, interval_seconds=interval)
+            self.window.set_status(f"Auto-recording active [{trig_mode.value}]")
+            print(f"[Recordia] Auto-recording started in mode '{trig_mode.value}' (interval={interval}s).")
 
     def _handle_finish_session(self):
         """Finalizes step session, compiles HTML report, and opens it."""
+        if self.auto_stepper.is_running:
+            self.auto_stepper.stop()
+
         if not self.session_manager.is_active or self.session_manager.step_count == 0:
             self.window.set_status("No steps recorded in active session.")
             return
@@ -126,7 +157,6 @@ class RecordiaApp:
         self.window.set_status(f"Session finished ({count} steps). Report generated!")
         print(f"[Recordia] Session finished. Report: {html_report}")
 
-        # Open generated HTML report in browser
         if html_report and os.path.exists(html_report):
             webbrowser.open(f"file:///{html_report}")
 
@@ -174,6 +204,8 @@ class RecordiaApp:
             self.cleanup()
 
     def cleanup(self):
+        if hasattr(self, "auto_stepper") and self.auto_stepper.is_running:
+            self.auto_stepper.stop()
         if hasattr(self, "recorder") and self.recorder.is_recording:
             self.recorder.stop_recording()
         if hasattr(self, "hotkeys") and self.hotkeys.is_running:

@@ -4,31 +4,33 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Git Flow](https://img.shields.io/badge/Git%20Flow-Feature%20Branches-green.svg)](docs/GIT_WORKFLOW_LOG.md)
 
-**RecordiaILIA** is an advanced desktop utility designed for automated **Problem Steps Recording (PSR)**, instant screenshot capturing, screen recording, and automated local project organization. Developed as a collaborative academic project demonstrating **Git Flow, Kanban Issue Tracking, and GitHub Collaborative Workflows**.
+**RecordiaILIA** is an advanced desktop utility designed for automated **Problem Steps Recording (PSR)**, flexible event-driven step capturing (manual, on mouse click, or periodic timer), screen recording, and automated local project organization. Developed as a collaborative academic project demonstrating **Git Flow, Kanban Issue Tracking, and GitHub Collaborative Workflows**.
 
 ---
 
 ## 👥 Authors & Roles
 
 - **Hachem Squalli** (`hachemite`): Architecture, UI initial prototype, Core Capture/Recording Logic.
-- **Yassine Ouali** (`Ysn-Ir`): Modular Architecture, Global Hotkeys (`pynput`), Storage & Settings Management, OpenCV Video Recording Engine, Automated Steps Recorder with Window Inspection & HTML Reporting, and Comprehensive Test Suite.
+- **Yassine Ouali** (`Ysn-Ir`): Modular Architecture, Global Hotkeys (`pynput`), Storage & Settings Management, OpenCV Video Recording Engine, Automated Event-Driven Steps Recorder (On-Click & Periodic Timer), and Comprehensive Test Suite.
 
 ---
 
 ## ✨ Features
 
-- 📑 **Project-Based Steps Recorder**:
-  - Automatically isolates each capture session into its own dedicated project folder (`captures/Projects/<Project_Name>_<Timestamp>/`).
-  - Automatically detects the foreground **Application Name** (e.g. `chrome.exe`, `Code.exe`) and **Window Title** via Windows APIs (`ctypes` + `psutil`).
-  - Records exact timestamps and user action annotations for every single step.
-  - Automatically exports a self-contained, responsive **HTML Report** (`report.html`) and Markdown summary (`REPORT.md`) containing all step screenshots, app badges, timestamps, and step descriptions.
-- 🖥️ **Interactive Desktop GUI**: Built with Tkinter, featuring project name configuration, real-time step counter, one-click HTML report export, capture controls, directory opening, and modal preferences.
+- 📑 **Automated Steps Recorder (User's Choice of Trigger)**:
+  - **Manual Trigger**: Capture steps on demand via UI button or global hotkey (`Ctrl + Shift + S`).
+  - **⚡ Auto on Mouse Click**: Automatically captures a step on every mouse click across the desktop with click coordinates `(x, y)` and active button.
+  - **⏱️ Auto Periodic Timer**: Automatically captures steps at a configurable interval (e.g. every 1s, 2s, 5s).
+  - **Active Window Inspection**: Automatically detects the foreground **Application Name** (e.g. `chrome.exe`, `Code.exe`) and **Window Title** via Windows APIs (`ctypes` + `psutil`).
+  - **Isolated Project Folders**: Creates dedicated timestamped directories for every session (`captures/Projects/<Project_Name>_<Timestamp>/`).
+  - **Interactive HTML & Markdown Reports**: Automatically exports responsive **HTML Reports** (`report.html`) with embedded screenshots, app badges, timestamps, and step descriptions, and opens it directly in the browser upon finishing a session.
+- 🖥️ **Interactive Desktop GUI**: Built with Tkinter, featuring trigger mode selection, interval tuning, live step counter, capture controls, directory opening, and modal preferences.
 - ⚡ **Global Hotkeys**: Background keyboard listener using `pynput` supporting system-wide shortcuts even when minimized:
   - **Capture Step**: `Ctrl + Shift + S`
   - **Toggle Screen Video**: `Ctrl + Shift + R`
 - 🎥 **Smooth Screen Recording**: Multi-threaded video recording engine using OpenCV (`cv2.VideoWriter` with `mp4v` codec) capturing frames in the background without UI lag.
 - ⚙️ **Persistent Preferences & Storage**: Automated hierarchical directory organization (`Projects/`, `Screenshots/`, and `Recordings/`), configurable storage folder, customizable screenshot format (`PNG`/`JPG`), and selectable framerate (`15`, `30`, `60` FPS).
-- 🧪 **Complete Test Suite**: 16 automated unit and integration tests covering window inspection, session management, settings, storage, hotkeys, screenshot, and video recording modules.
+- 🧪 **Complete Test Suite**: 19 automated unit and integration tests covering auto-steppers, window inspection, session management, settings, storage, hotkeys, screenshot, and video recording modules.
 
 ---
 
@@ -50,6 +52,7 @@ recordia-ilia/
 │   │   └── settings.py           # JSON settings persistence (paths, hotkeys, fps)
 │   ├── core/                     # Core system utilities
 │   │   ├── __init__.py
+│   │   ├── auto_stepper.py       # Event-driven triggers: Manual, On-Click & Periodic Timer
 │   │   ├── hotkeys.py            # Global Hotkey manager via pynput GlobalHotKeys
 │   │   └── window_info.py        # Active foreground window and process detection
 │   ├── storage/                  # File persistence and session management
@@ -58,11 +61,12 @@ recordia-ilia/
 │   │   └── session_manager.py    # Project-based step session manager & HTML report exporter
 │   └── ui/                       # Desktop user interface (Tkinter)
 │       ├── __init__.py
-│       ├── main_window.py        # Main control window with step recorder controls
+│       ├── main_window.py        # Main control window with mode selectors and counters
 │       ├── settings_window.py    # Configuration modal dialog
-│       └── step_dialog.py        # Step annotation and quick-mode dialog
-├── tests/                        # Comprehensive test suite (16 tests)
+│       └── step_dialog.py        # Step annotation dialog
+├── tests/                        # Comprehensive test suite (19 tests)
 │   ├── __init__.py
+│   ├── test_auto_stepper.py
 │   ├── test_file_manager.py
 │   ├── test_hotkeys.py
 │   ├── test_recorder.py
@@ -98,7 +102,7 @@ python src/main.py
 ```
 
 ### 4. Running the Tests
-Execute the automated test suite (16 tests):
+Execute the automated test suite (19 tests):
 ```bash
 python -m unittest discover -s tests -v
 ```
