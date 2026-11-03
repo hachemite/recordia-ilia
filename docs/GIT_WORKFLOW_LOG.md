@@ -25,8 +25,8 @@ This project adheres to the **Feature Branch Workflow**:
 | **#1** | Design the project architecture and hotkeys | `Ysn-Ir` | `feature/architecture-and-hotkeys` | **CLOSED** (Commit 4d4966e / Merge d0735a3) |
 | **#2** | Create the user interface | `hachemite` | `feature/Creating_user_interface` | **CLOSED** (PR #9) |
 | **#3** | Develop file saving and settings | `Ysn-Ir` | `feature/file-saving-and-settings` | **CLOSED** (Commit e923205 / Merge e49e456) |
-| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **In Progress** |
-| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | Queued |
+| **#4** | Develop screenshot capture | `Ysn-Ir` | `feature/screenshot-capture` | **CLOSED** (Commit b3864cf / Merge d2ab6c1) |
+| **#5** | Develop screen recording | `Ysn-Ir` | `feature/screen-recording` | **In Progress** |
 | **#6** | Develop file saving and settings | *(unassigned)* | Duplicate of #3 | **CLOSED** (Merge e49e456) |
 | **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | Queued |
 | **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | Queued |
@@ -197,3 +197,63 @@ Switched to a new branch 'feature/screenshot-capture'
 - Supports fullscreen capture and region capture with Pillow and mss.
 - Added graceful headless / CI fallback for systems without active display devices.
 - Integrated screenshot trigger into `RecordiaApp` in `src/main.py`.
+
+#### 4.3 Staging and Committing
+**Action**: Stage and commit screenshot engine linking Issue #4.
+```bash
+git add .
+git commit -m "feat(capture): implement screenshot capture engine with mss (fixes #4)"
+```
+**Terminal Output**:
+```text
+[feature/screenshot-capture b3864cf] feat(capture): implement screenshot capture engine with mss (fixes #4)
+ 4 files changed, 156 insertions(+), 10 deletions(-)
+ create mode 100644 src/capture/screenshot.py
+```
+
+#### 4.4 Publishing Feature Branch Upstream
+**Action**: Push feature branch to `origin`.
+```bash
+git push -u origin feature/screenshot-capture
+```
+**Terminal Output**:
+```text
+branch 'feature/screenshot-capture' set up to track 'origin/feature/screenshot-capture'.
+To https://github.com/hachemite/recordia-ilia.git
+ * [new branch]      feature/screenshot-capture -> feature/screenshot-capture
+```
+
+#### 4.5 Merging into Main & Auto-Closing Issue #4
+**Action**: Switch to `main`, merge `--no-ff`, and push upstream.
+```bash
+git checkout main
+git pull origin main
+git merge --no-ff feature/screenshot-capture -m "Merge branch 'feature/screenshot-capture' (Closes #4)"
+git push origin main
+```
+**Terminal Output**:
+```text
+Merge made by the 'ort' strategy.
+To https://github.com/hachemite/recordia-ilia.git
+   e49e456..d2ab6c1  main -> main
+```
+
+---
+
+### Step 5: Feature #5 - Screen Recording Engine (Closes #5)
+
+#### 5.1 Branch Creation
+**Action**: Create and switch to isolated branch `feature/screen-recording`.
+```bash
+git checkout -b feature/screen-recording
+```
+**Terminal Output**:
+```text
+Switched to a new branch 'feature/screen-recording'
+```
+
+#### 5.2 Changes Implemented
+- Created `src/capture/recorder.py` implementing `ScreenRecorder` inheriting from `BaseRecordingEngine`.
+- Continuous background frame capture and video encoding using `cv2.VideoWriter` (`mp4v` codec) and `mss`.
+- Non-blocking execution via worker thread with synchronization locks and clean stop/join mechanisms.
+- Wired Start/Stop recording actions into `RecordiaApp` and UI status feedback in `src/main.py`.
