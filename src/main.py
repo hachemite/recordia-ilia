@@ -7,6 +7,7 @@ settings with custom hotkey configuration, file manager, and video recording.
 import sys
 import os
 import webbrowser
+from tkinter import messagebox
 
 # Ensure src root is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -232,6 +233,15 @@ class RecordiaApp:
 
     def run(self):
         self.hotkeys.start()
+        if not self.hotkeys.is_running and self.hotkeys.last_error:
+            warning = (
+                "Global hotkeys could not be registered:\n"
+                f"{self.hotkeys.last_error}\n\n"
+                "Step capture and video hotkeys will be inactive. "
+                "You can still use the buttons in this window."
+            )
+            messagebox.showwarning("Hotkey Registration Failed", warning)
+            self.window.set_status("Warning: global hotkeys are inactive")
         try:
             self.window.run()
         finally:

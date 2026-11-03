@@ -21,6 +21,12 @@ class HotkeyManager:
         self.key_bindings = key_bindings or {}
         self._listener = None
         self._is_running = False
+        self._last_error: str = ""
+
+    @property
+    def last_error(self) -> str:
+        """Human-readable message describing the last registration/start failure ("" if none)."""
+        return self._last_error
 
     def register_hotkey(self, combo: str, callback: Callable):
         """Register or overwrite a hotkey combination."""
@@ -39,7 +45,9 @@ class HotkeyManager:
             self._listener = keyboard.GlobalHotKeys(self.key_bindings)
             self._listener.start()
             self._is_running = True
+            self._last_error = ""
         except Exception as e:
+            self._last_error = str(e)
             print(f"[HotkeyManager] Error initializing hotkeys: {e}")
             self._is_running = False
 

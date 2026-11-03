@@ -1,6 +1,7 @@
 """Unit tests for HotkeyManager module."""
 
 import unittest
+import unittest.mock
 import sys
 import os
 
@@ -27,6 +28,16 @@ class TestHotkeyManager(unittest.TestCase):
         # Should not raise exception
         hm.stop()
         self.assertFalse(hm.is_running)
+
+    def test_start_failure_is_reported(self):
+        """Issue #11: start() errors are stored in last_error."""
+        hm = HotkeyManager({"<ctrl>+<alt>+z": lambda: None})
+        with unittest.mock.patch(
+            "core.hotkeys.keyboard.GlobalHotKeys", side_effect=Exception("listener blocked")
+        ):
+            hm.start()
+        self.assertFalse(hm.is_running)
+        self.assertIn("listener blocked", hm.last_error)
 
 
 if __name__ == "__main__":
