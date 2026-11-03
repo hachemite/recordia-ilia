@@ -50,6 +50,20 @@ class TestSessionManager(unittest.TestCase):
         self.assertEqual(step2.step_number, 2)
         self.assertEqual(self.sm.step_count, 2)
 
+    def test_update_step_description(self):
+        self.sm.start_session("Update_Test")
+        img = Image.new("RGB", (100, 100), color="white")
+        step = self.sm.record_step(img, description="Initial description")
+        self.assertEqual(step.description, "Initial description")
+
+        # Update description
+        success = self.sm.update_step_description(1, "Updated description after review")
+        self.assertTrue(success)
+        self.assertEqual(self.sm.steps[0].description, "Updated description after review")
+
+        # Non-existent step returns False
+        self.assertFalse(self.sm.update_step_description(999, "invalid"))
+
     def test_finish_session_generates_html_and_markdown_reports(self):
         self.sm.start_session("Report_Verification")
         img = Image.new("RGB", (100, 100), color="red")

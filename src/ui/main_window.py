@@ -1,6 +1,7 @@
 """
 Desktop User Interface for RecordiaILIA Steps Recorder.
-Supports Manual, On-Click, and Periodic Interval auto-capture modes.
+Clean, professional design without emoji stickers.
+Supports Manual, On-Click, and Periodic Interval auto-capture modes, plus Step Review.
 """
 
 import tkinter as tk
@@ -13,22 +14,29 @@ class MainWindow:
         on_record_step=None,
         on_finish_session=None,
         on_toggle_auto=None,
+        on_open_step_editor=None,
         on_screenshot=None,
         on_start_record=None,
         on_stop_record=None,
         on_open_settings=None,
         on_open_captures=None,
-        on_close=None
+        on_close=None,
+        step_hotkey="<ctrl>+<shift>+s",
+        video_hotkey="<ctrl>+<shift>+r"
     ):
         self.on_record_step = on_record_step or on_screenshot or (lambda: print("record step"))
         self.on_finish_session = on_finish_session or (lambda: print("finish session"))
         self.on_toggle_auto = on_toggle_auto or (lambda mode, interval: print(f"toggle auto: {mode}, {interval}"))
+        self.on_open_step_editor = on_open_step_editor or (lambda: print("open step editor"))
         self.on_screenshot = on_screenshot or self.on_record_step
         self.on_start_record = on_start_record or (lambda: print("start recording"))
         self.on_stop_record = on_stop_record or (lambda: print("stop recording"))
         self.on_open_settings = on_open_settings or (lambda: print("settings"))
         self.on_open_captures = on_open_captures or (lambda: print("captures folder"))
         self.on_close = on_close
+
+        self.step_hotkey = step_hotkey
+        self.video_hotkey = video_hotkey
 
         self.root = tk.Tk()
         self.root.title("Recordia ILIA - Steps Recorder")
@@ -40,9 +48,20 @@ class MainWindow:
         self.project_name_var = tk.StringVar(value="My_Project")
         self.trigger_mode_var = tk.StringVar(value="manual")
         self.interval_var = tk.DoubleVar(value=2.0)
+        self.hotkey_legend_var = tk.StringVar(value=self._get_legend_text())
         self.is_auto_running = False
 
         self._build_ui()
+
+    def _get_legend_text(self) -> str:
+        return f"Global Hotkeys: Step Capture [{self.step_hotkey}] | Video [{self.video_hotkey}]"
+
+    def update_hotkey_labels(self, step_hk: str, vid_hk: str):
+        self.step_hotkey = step_hk
+        self.video_hotkey = vid_hk
+        self.hotkey_legend_var.set(self._get_legend_text())
+        if self.trigger_mode_var.get() == "manual":
+            self.action_btn.config(text=f"Capture Step ({self.step_hotkey})")
 
     def _build_ui(self):
         # Header
@@ -62,12 +81,12 @@ class MainWindow:
         counter_lbl.pack(anchor=tk.W, pady=(4, 0))
 
         # Capture Mode Section
-        mode_frame = tk.LabelFrame(self.root, text=" Step Trigger Mode (User's Choice) ", font=("Arial", 9, "bold"), padx=10, pady=6)
+        mode_frame = tk.LabelFrame(self.root, text=" Step Trigger Mode ", font=("Arial", 9, "bold"), padx=10, pady=6)
         mode_frame.pack(fill=tk.X, padx=16, pady=(0, 8))
 
         ttk.Radiobutton(
             mode_frame,
-            text="Manual (Button / Ctrl+Shift+S)",
+            text=f"Manual Trigger (Button or {self.step_hotkey})",
             variable=self.trigger_mode_var,
             value="manual",
             command=self._on_mode_change
@@ -75,7 +94,7 @@ class MainWindow:
 
         ttk.Radiobutton(
             mode_frame,
-            text="⚡ Auto on Mouse Click (Records every click)",
+            text="Auto on Mouse Click (Captures every click)",
             variable=self.trigger_mode_var,
             value="on_click",
             command=self._on_mode_change
@@ -85,7 +104,7 @@ class MainWindow:
         periodic_row.pack(fill=tk.X, pady=1)
         ttk.Radiobutton(
             periodic_row,
-            text="⏱️ Auto Periodic Timer:",
+            text="Auto Periodic Timer:",
             variable=self.trigger_mode_var,
             value="periodic",
             command=self._on_mode_change
@@ -95,10 +114,10 @@ class MainWindow:
         tk.Spinbox(periodic_row, from_=0.5, to=60.0, increment=0.5, textvariable=self.interval_var, width=5).pack(side=tk.LEFT)
         tk.Label(periodic_row, text="sec", font=("Arial", 9)).pack(side=tk.LEFT, padx=(2, 0))
 
-        # Dynamic Action Button (Changes based on mode)
+        # Primary Action Button
         self.action_btn = tk.Button(
             self.root,
-            text="📸 Capture Step (Ctrl+Shift+S)",
+            text=f"Capture Step ({self.step_hotkey})",
             bg="#2563eb",
             fg="white",
             font=("Arial", 10, "bold"),
@@ -106,29 +125,25 @@ class MainWindow:
             width=34,
             command=self._handle_primary_action
         )
-        self.action_btn.pack(pady=4)
+        self.action_btn.pack(pady=3)
 
-        tk.Button(
-            self.root,
-            text="📄 Finish & Export HTML Report",
-            bg="#059669",
-            fg="white",
-            font=("Arial", 10, "bold"),
-            width=34,
-            command=self._finish_session
-        ).pack(pady=3)
+        # Review / Edit and Export Buttons
+        step_ops_frame = tk.Frame(self.root)
+        step_ops_frame.pack(pady=2)
+        tk.Button(step_ops_frame, text="Review / Edit Steps", width=16, font=("Arial", 9), command=self.on_open_step_editor).pack(side=tk.LEFT, padx=3)
+        tk.Button(step_ops_frame, text="Finish & Export Report", width=18, bg="#059669", fg="white", font=("Arial", 9, "bold"), command=self._finish_session).pack(side=tk.LEFT, padx=3)
 
         # Video recording section
         vid_frame = tk.Frame(self.root)
         vid_frame.pack(pady=3)
-        tk.Button(vid_frame, text="Start Video 🎥", width=16, command=self._start_video).pack(side=tk.LEFT, padx=3)
-        tk.Button(vid_frame, text="Stop Video ⏹️", width=16, command=self._stop_video).pack(side=tk.LEFT, padx=3)
+        tk.Button(vid_frame, text="Start Video", width=16, command=self._start_video).pack(side=tk.LEFT, padx=3)
+        tk.Button(vid_frame, text="Stop Video", width=16, command=self._stop_video).pack(side=tk.LEFT, padx=3)
 
-        # Secondary utilities
+        # Utilities row
         util_frame = tk.Frame(self.root)
         util_frame.pack(pady=3)
-        tk.Button(util_frame, text="Open Captures 📁", width=16, command=self.on_open_captures).pack(side=tk.LEFT, padx=3)
-        tk.Button(util_frame, text="Settings ⚙️", width=16, command=self.on_open_settings).pack(side=tk.LEFT, padx=3)
+        tk.Button(util_frame, text="Open Captures", width=16, command=self.on_open_captures).pack(side=tk.LEFT, padx=3)
+        tk.Button(util_frame, text="Settings", width=16, command=self.on_open_settings).pack(side=tk.LEFT, padx=3)
 
         # Status text
         self.status_label = tk.Label(self.root, textvariable=self.status, font=("Arial", 9, "italic"), fg="#334155")
@@ -137,7 +152,7 @@ class MainWindow:
         # Hotkey legend footer
         tk.Label(
             self.root,
-            text="Global Hotkeys: Step Capture [Ctrl+Shift+S] | Video [Ctrl+Shift+R]",
+            textvariable=self.hotkey_legend_var,
             font=("Arial", 8),
             fg="gray"
         ).pack(side=tk.BOTTOM, pady=6)
@@ -149,12 +164,12 @@ class MainWindow:
 
         if mode == "manual":
             self.action_btn.config(
-                text="📸 Capture Step (Ctrl+Shift+S)",
+                text=f"Capture Step ({self.step_hotkey})",
                 bg="#2563eb"
             )
         else:
             self.action_btn.config(
-                text=f"▶️ Start Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
+                text=f"Start Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
                 bg="#16a34a"
             )
 
@@ -178,7 +193,7 @@ class MainWindow:
 
         self.is_auto_running = True
         self.action_btn.config(
-            text=f"⏹️ Stop Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
+            text=f"Stop Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
             bg="#dc2626"
         )
         self.on_toggle_auto(mode, interval)
@@ -187,7 +202,7 @@ class MainWindow:
         self.is_auto_running = False
         mode = self.trigger_mode_var.get()
         self.action_btn.config(
-            text=f"▶️ Start Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
+            text=f"Start Auto-Recording ({'Click' if mode == 'on_click' else 'Timer'})",
             bg="#16a34a"
         )
         self.on_toggle_auto("stop", 0)

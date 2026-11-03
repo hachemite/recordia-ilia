@@ -4,7 +4,7 @@ Allows user to review detected app name and window title, and enter an optional 
 """
 
 import tkinter as tk
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Dict, Any
 
 
 class StepDialog:
@@ -17,7 +17,7 @@ class StepDialog:
         self.quick_mode: bool = False
 
         self.dialog = tk.Toplevel(parent)
-        self.dialog.title(f"Annotate Step {step_num} - RecordiaILIA")
+        self.dialog.title(f"Annotate Step {step_num} - Recordia ILIA")
         self.dialog.geometry("440x260")
         self.dialog.resizable(False, False)
         self.dialog.transient(parent)
@@ -33,7 +33,7 @@ class StepDialog:
         app_name = self.window_info.get("app_name", "Desktop")
         win_title = self.window_info.get("window_title", "Active Screen")
 
-        tk.Label(pad, text=f"Step #{self.step_num} Captured!", font=("Arial", 12, "bold"), fg="#2563eb").pack(anchor=tk.W)
+        tk.Label(pad, text=f"Step #{self.step_num} Captured", font=("Arial", 12, "bold"), fg="#2563eb").pack(anchor=tk.W)
         tk.Label(pad, text=f"Application: {app_name}", font=("Arial", 9, "bold")).pack(anchor=tk.W, pady=(6, 2))
         tk.Label(pad, text=f"Window: {win_title}", font=("Arial", 8), fg="#555").pack(anchor=tk.W, pady=(0, 10))
 

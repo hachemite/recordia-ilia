@@ -31,7 +31,8 @@ This project adheres to the **Feature Branch Workflow**:
 | **#7** | Test the features | `Ysn-Ir` | `feature/test-features` | **CLOSED** (Commit `93805f8` / Merge `798cf8a`) |
 | **#8** | Write documentation and report | *(unassigned)* | `feature/documentation-and-report` | **CLOSED** (Commit `60a428d` / Merge `9f431ab`) |
 | **Bonus 1** | Automated Steps Recorder & HTML Reporting | `Ysn-Ir` | `feature/steps-recorder` | **CLOSED** (Commit `aae535f` / Merge `bbece0a`) |
-| **Bonus 2** | Event-Driven Auto Step Triggers (Click & Timer) | `Ysn-Ir` | `feature/auto-step-triggers` | **In Progress** |
+| **Bonus 2** | Event-Driven Auto Step Triggers (Click & Timer) | `Ysn-Ir` | `feature/auto-step-triggers` | **CLOSED** (Commit `f106f05` / Merge `2ed5baa`) |
+| **Bonus 3** | Custom Hotkey Re-binding & Step Description Editor | `Ysn-Ir` | `feature/hotkey-config-and-step-editor` | **In Progress** |
 
 ---
 
@@ -50,83 +51,78 @@ Already up to date.
 
 ### Step 2: Feature #1 - Architecture & Hotkeys Listener (Closes #1)
 - Branch: `feature/architecture-and-hotkeys`
-- Commit: `feat(core): design project architecture and global hotkeys listener (fixes #1)` (`4d4966e`)
-- Merged into `main` (`d0735a3`) and pushed upstream.
+- Commit: `4d4966e` / Merge: `d0735a3`
 
 ---
 
 ### Step 3: Feature #3 & #6 - File Saving & Settings Dialog (Closes #3, Closes #6)
 - Branch: `feature/file-saving-and-settings`
-- Commit: `feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)` (`e923205`)
-- Merged into `main` (`e49e456`) and pushed upstream.
+- Commit: `e923205` / Merge: `e49e456`
 
 ---
 
 ### Step 4: Feature #4 - Screenshot Capture Engine (Closes #4)
 - Branch: `feature/screenshot-capture`
-- Commit: `feat(capture): implement screenshot capture engine with mss (fixes #4)` (`b3864cf`)
-- Merged into `main` (`d2ab6c1`) and pushed upstream.
+- Commit: `b3864cf` / Merge: `d2ab6c1`
 
 ---
 
 ### Step 5: Feature #5 - Screen Recording Engine (Closes #5)
 - Branch: `feature/screen-recording`
-- Commit: `feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)` (`ee15286`)
-- Merged into `main` (`1b0f505`) and pushed upstream.
+- Commit: `ee15286` / Merge: `1b0f505`
 
 ---
 
 ### Step 6: Feature #7 - Comprehensive Test Suite (Closes #7)
 - Branch: `feature/test-features`
-- Commit: `test(core): implement comprehensive unit and integration test suite (fixes #7)` (`93805f8`)
-- Merged into `main` (`798cf8a`) and pushed upstream.
+- Commit: `93805f8` / Merge: `798cf8a`
 
 ---
 
 ### Step 7: Feature #8 - Documentation, Setup Guide & Report (Closes #8)
 - Branch: `feature/documentation-and-report`
-- Commit: `docs: complete user documentation, setup guide, and Git workflow report (fixes #8)` (`60a428d`)
-- Merged into `main` (`9f431ab`) and pushed upstream.
+- Commit: `60a428d` / Merge: `9f431ab`
 
 ---
 
 ### Step 8: Feature - Automated Steps Recorder & HTML Reporting
 - Branch: `feature/steps-recorder`
-- Commit: `feat(steps): implement automated steps recorder with window inspection and HTML reports` (`aae535f`)
-- Merged into `main` (`bbece0a`) and pushed upstream.
+- Commit: `aae535f` / Merge: `bbece0a`
 
 ---
 
-### Step 9: Feature - Event-Driven Auto Step Triggers (User's Choice: Manual, Click, Timer)
+### Step 9: Feature - Event-Driven Auto Step Triggers (Click & Timer)
+- Branch: `feature/auto-step-triggers`
+- Commit: `f106f05` / Merge: `2ed5baa`
 
-#### 9.1 Branch Creation
+---
+
+### Step 10: Feature - Custom Hotkey Re-binding, Step Review/Editor & Clean UI
+
+#### 10.1 Branch Creation
 ```bash
-git checkout -b feature/auto-step-triggers
+git checkout -b feature/hotkey-config-and-step-editor
 ```
 **Terminal Output**:
 ```text
-Switched to a new branch 'feature/auto-step-triggers'
+Switched to a new branch 'feature/hotkey-config-and-step-editor'
 ```
 
-#### 9.2 Changes Implemented
-- Created `src/core/auto_stepper.py` with `AutoStepper` supporting:
-  - `TriggerMode.MANUAL`: on-demand user captures.
-  - `TriggerMode.ON_CLICK`: global `pynput.mouse.Listener` capturing steps automatically on every desktop mouse click with coordinates `(x, y)` and button name, debounced against rapid clicks.
-  - `TriggerMode.PERIODIC`: background daemon timer capturing steps automatically every $N$ seconds.
-- Enhanced `src/ui/main_window.py` with:
-  - User trigger mode selector (Manual, Auto on Click, Auto Periodic Timer).
-  - Interval spinbox/entry for tuning timer seconds.
-  - Dynamic Start/Stop toggle button for auto-capturing.
-- Updated `src/main.py` orchestrator linking `AutoStepper` background triggers to `SessionManager`.
-- Created `tests/test_auto_stepper.py` unit tests bringing total test suite to 19 passing tests.
+#### 10.2 Changes Implemented
+- Updated `src/ui/settings_window.py` with custom hotkey configuration fields for step capture (e.g. `<f9>`) and video recording with instant live re-binding.
+- Created `src/ui/step_editor_window.py`: Dedicated interactive step review and description editor allowing users to inspect all captured steps in a Treeview list, edit descriptions, and save updates back to `session_metadata.json`.
+- Updated `src/storage/session_manager.py` with `update_step_description()` and `get_steps()` methods.
+- Removed emoji stickers across the UI and HTML report templates for a clean, minimal appearance.
+- Updated `src/main.py` orchestrator with live hotkey re-registration and step editor wiring.
+- Added unit test `test_update_step_description` in `tests/test_session_manager.py`, bringing total passing test suite count to 20 tests.
 
-#### 9.3 Test Suite Execution
+#### 10.3 Test Suite Execution
 ```bash
 python -m unittest discover -s tests -v
 ```
 **Terminal Output**:
 ```text
-Ran 19 tests in 2.556s
+Ran 20 tests in 2.598s
 
 OK
 ```
