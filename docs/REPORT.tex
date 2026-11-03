@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=2.2cm,top=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{xcolor}
@@ -23,6 +23,8 @@
 \definecolor{conceptbg}{RGB}{239, 246, 255}
 \definecolor{noteborder}{RGB}{22, 163, 74}
 \definecolor{notebg}{RGB}{240, 253, 244}
+\definecolor{warnborder}{RGB}{220, 38, 38}
+\definecolor{warnbg}{RGB}{254, 242, 242}
 \definecolor{lightgray}{RGB}{241, 245, 249}
 
 % Header & Footer
@@ -30,29 +32,27 @@
 \fancyhf{}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\headrule}{\hbox to\headwidth{\color{lightgray}\leaders\hrule height \headrulewidth\hfill}}
-\fancyhead[L]{\small\color{gray}\textbf{RecordiaILIA} \textbar\ Collaborative Git \& GitHub Workflow Report}
+\fancyhead[L]{\small\color{gray}\textbf{RecordiaILIA} \textbar\ Academic Git \& GitHub Engineering Report}
 \fancyhead[R]{\small\color{gray}November 2026}
-\fancyfoot[L]{\small\color{gray}Academic Practical Work (TP) Report}
+\fancyfoot[L]{\small\color{gray}Collaborative Version Control \& PSR Architecture}
 \fancyfoot[R]{\small\color{gray}Page \thepage}
 
-% Hyperref setup
 \hypersetup{
     colorlinks=true,
     linkcolor=primaryblue,
     filecolor=primaryblue,      
     urlcolor=primaryblue,
-    pdftitle={RecordiaILIA - Collaborative Git & GitHub Workflow Report},
+    pdftitle={RecordiaILIA - Academic Git & GitHub Engineering Report},
     pdfauthor={Yassine Ouali, Hachem Squalli}
 }
 
-% Section formatting
 \titleformat{\section}{\Large\bfseries\color{primaryblue}}{\thesection}{1em}{}
 \titleformat{\subsection}{\large\bfseries\color{darkslate}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkslate}}{\thesubsubsection}{1em}{}
 
-% Terminal / Code listings style
 \lstset{
     backgroundcolor=\color{terminalbg},
-    basicstyle=\color{terminalfg}\ttfamily\footnotesize,
+    basicstyle=\color{terminalfg}\ttfamily\scriptsize,
     breaklines=true,
     frame=none,
     columns=fullflexible,
@@ -60,19 +60,18 @@
     showstringspaces=false
 }
 
-% Custom Tutorial Boxes
 \newtcolorbox{terminalbox}[1][]{
     enhanced,
     colback=terminalbg,
     colframe=terminalborder,
     coltext=terminalfg,
-    arc=4mm,
+    arc=3mm,
     boxrule=1pt,
-    left=8pt,
-    right=8pt,
-    top=8pt,
-    bottom=8pt,
-    fontupper=\ttfamily\footnotesize,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt,
+    fontupper=\ttfamily\scriptsize,
     breakable,
     #1
 }
@@ -82,102 +81,167 @@
     colback=conceptbg,
     colframe=conceptborder,
     boxrule=0pt,
-    leftrule=4pt,
+    leftrule=3.5pt,
     arc=2mm,
     title={\textbf{\color{primaryblue}Git Principle: #1}},
     coltitle=primaryblue,
-    attach title to upper={\par\vspace{3pt}},
+    attach title to upper={\par\vspace{2pt}},
     fontupper=\small,
-    top=6pt,
-    bottom=6pt,
-    left=8pt,
-    right=8pt
+    top=5pt,
+    bottom=5pt,
+    left=7pt,
+    right=7pt
 }
 
-\newtcolorbox{notebox}[1]{
+\newtcolorbox{protip}[1]{
     enhanced,
     colback=notebg,
     colframe=noteborder,
     boxrule=0pt,
-    leftrule=4pt,
+    leftrule=3.5pt,
     arc=2mm,
-    title={\textbf{\color{noteborder}#1}},
+    title={\textbf{\color{noteborder}Pro Tip: #1}},
     coltitle=noteborder,
-    attach title to upper={\par\vspace{3pt}},
+    attach title to upper={\par\vspace{2pt}},
     fontupper=\small,
-    top=6pt,
-    bottom=6pt,
-    left=8pt,
-    right=8pt
+    top=5pt,
+    bottom=5pt,
+    left=7pt,
+    right=7pt
+}
+
+\newtcolorbox{warningbox}[1]{
+    enhanced,
+    colback=warnbg,
+    colframe=warnborder,
+    boxrule=0pt,
+    leftrule=3.5pt,
+    arc=2mm,
+    title={\textbf{\color{warnborder}Common Pitfall: #1}},
+    coltitle=warnborder,
+    attach title to upper={\par\vspace{2pt}},
+    fontupper=\small,
+    top=5pt,
+    bottom=5pt,
+    left=7pt,
+    right=7pt
 }
 
 \begin{document}
 
 % -------------------------------------------------------------
-% TITLE & HEADER
+% COVER / TITLE
 % -------------------------------------------------------------
 \begin{center}
+    {\small\textbf{\color{gray}ACADEMIC PRACTICAL WORK (TP) REPORT}}\\[0.2em]
+    {\footnotesize\color{gray}Module: Version Control Systems, Collaborative Software Engineering \& Automated PSR}\\[1.5em]
     {\Huge\bfseries\color{primaryblue} RecordiaILIA}\\[0.4em]
-    {\Large\bfseries\color{darkslate} Collaborative Git \& GitHub Workflow Report}\\[0.3em]
-    {\color{gray}\textit{Academic Practical Work (TP) -- Feature Branching, Issue Tracking, and Multi-Contributor Integration}}\\[1em]
+    {\Large\bfseries\color{darkslate} Automated Problem Steps Recorder \& Collaborative Git Engineering}\\[0.3em]
+    {\color{gray}\textit{A Comprehensive Technical Study of Feature Branching, Issue Tracking, CI Verification, and Win32 Automation}}\\[1em]
     \rule{\linewidth}{1.2pt}\\[1em]
 \end{center}
 
 \begin{minipage}[t]{0.48\textwidth}
     \textbf{Authors \& Roles:}\\[0.3em]
     \textbf{Yassine Ouali} (\texttt{Ysn-Ir} / \texttt{YSN})\\
-    {\footnotesize\color{gray} Architecture, Hotkeys, Storage, Video, Steps Recorder, Test Suite}\\[0.3em]
+    {\footnotesize\color{gray} Architecture \& Hotkeys, File Storage, Video Capture Engine, Automated Steps Recorder, Event Triggers, Test Suite}\\[0.4em]
     \textbf{Hachem Squalli} (\texttt{hachemite})\\
-    {\footnotesize\color{gray} Architecture, UI Prototype, Core Capture Logic}
+    {\footnotesize\color{gray} Repository Owner, Architecture Inception, UI Layout Prototype}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.48\textwidth}
-    \textbf{Repository Details:}\\[0.3em]
-    \textbf{GitHub}: \url{https://github.com/hachemite/recordia-ilia}\\
-    \textbf{Branch Model}: Feature Branch Workflow (\texttt{--no-ff})\\
-    \textbf{Issues Status}: 100\% Closed (8/8 Issues)\\
-    \textbf{Test Status}: 20/20 Tests Passing (100\% Pass Rate)
+    \textbf{Repository \& Execution Specs:}\\[0.3em]
+    \textbf{GitHub Repository}: \url{https://github.com/hachemite/recordia-ilia}\\
+    \textbf{Default Branch}: \texttt{main} (Protected, Clean Working Tree)\\
+    \textbf{Branch Model}: Strict Feature Branch Workflow (\texttt{--no-ff})\\
+    \textbf{Issues Status}: 100\% Closed (8/8 GitHub Issues)\\
+    \textbf{Test Coverage}: 20/20 Passing Tests (100\% Pass Rate in 2.54s)\\
+    \textbf{Target Platform}: Windows 10/11 x64 (Python 3.12+)
 \end{minipage}
 
 \vspace{1.5em}
 
-% -------------------------------------------------------------
-% EXECUTIVE SUMMARY
-% -------------------------------------------------------------
-\section{Executive Summary}
+\begin{tcolorbox}[colback=lightgray,colframe=lightgray,arc=2mm,left=8pt,right=8pt,top=6pt,bottom=6pt]
+    \textbf{\color{darkslate}Project Abstract \& Executive Overview:}\\[0.3em]
+    {\small With Microsoft's planned deprecation of the built-in Windows Problem Steps Recorder (\texttt{psr.exe}) in Windows 11, there is a pronounced demand for an open-source, robust, and extensible screen workflow capturing solution. \textbf{RecordiaILIA} satisfies this requirement by providing automated active-window inspection, foreground process detection, multi-trigger capture modes (mouse click hooks, periodic timers, and custom hotkeys), multi-threaded OpenCV desktop video capture, and automated responsive HTML and Markdown reporting.
 
-This academic report provides a rigorous, step-by-step documentation of the collaborative Git and GitHub workflows utilized during the development of \textbf{RecordiaILIA}. Designed as a high-performance desktop utility for automated \textbf{Problem Steps Recording (PSR)}, desktop screen video recording, and custom hotkeys, this project demonstrates real-world software engineering practices.
+    Simultaneously, this project was executed as a masterclass in collaborative version control, utilizing a strict \textbf{Feature Branch Workflow}. Over 10 isolated feature branches were created, pushed, and integrated via non-fast-forward (\texttt{--no-ff}) merge commits, triggering automated GitHub issue closures. This document serves as an exhaustive, tutorial-style academic report detailing every software engineering decision, theoretical Git principle, terminal command, and test verification output.}
+\end{tcolorbox}
 
-All \textbf{8 original GitHub issues} were completed, peer-reviewed, and merged using isolated feature branches with non-fast-forward (\texttt{--no-ff}) merges. Furthermore, \textbf{3 major advanced enhancements} were designed and integrated: automated step recording with active window and process detection, event-driven triggers (mouse click and periodic timer), and an interactive step review dialog.
+\vspace{1.5em}
+\tableofcontents
+\newpage
 
-\vspace{0.8em}
+\section{System Architecture \& Technical Specifications}
+\subsection{The Problem Steps Recorder (PSR) Paradigm}
+The Windows Problem Steps Recorder (\texttt{psr.exe}) has long been an indispensable utility for IT support technicians, software quality assurance (QA) engineers, and technical documentarians. It operates by capturing a screenshot every time a user clicks their mouse or switches active applications, appending the active window name, process title, exact cursor coordinates, and timestamp.
 
-% -------------------------------------------------------------
-% COLLABORATIVE GIT METHODOLOGY
-% -------------------------------------------------------------
-\section{Collaborative Git Methodology}
-
-The project adheres strictly to the professional \textbf{Feature Branch Workflow}:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Clean Production Branch (\texttt{main})}: The \texttt{main} branch represents production-ready, verified code. Direct commits without feature branches are restricted.
-    \item \textbf{Isolated Feature Branches (\texttt{feature/<name>})}: Every distinct issue and functional enhancement is developed on its own dedicated branch.
-    \item \textbf{Traceable Non-Fast-Forward Merges (\texttt{--no-ff})}: Merges into \texttt{main} preserve the distinct branch topology in the Git commit graph rather than flattening commits linearly.
-    \item \textbf{Automated GitHub Issue Resolution}: Commit messages and merge headers use standard keywords (\texttt{Fixes \#X}, \texttt{Closes \#X}), triggering GitHub's automated issue tracking to close corresponding issues automatically upon merge.
-    \item \textbf{Continuous Verification}: Prior to merging, the full automated test suite is run locally, guaranteeing zero regressions.
+When Microsoft officially announced the retirement and deprecation of \texttt{psr.exe} in Windows 11 builds, developers were left without a native, lightweight troubleshooting tool. \textbf{RecordiaILIA} was architected to replace and significantly enhance this workflow:
+\begin{enumerate}
+    \item \textbf{Automated Active Window \& Process Inspection}: Uses the Win32 API via Python's \texttt{ctypes} (\texttt{GetForegroundWindow}, \texttt{GetWindowTextW}, \texttt{QueryFullProcessImageNameW}) to detect the target process executable and window title with zero external DLL dependencies.
+    \item \textbf{Flexible Multi-Modal Capture Triggers}: Manual hotkeys, mouse click listener hooks (\texttt{pynput.mouse.Listener}), and periodic background timers (\texttt{threading.Timer}).
+    \item \textbf{Isolated Project Workspace Management}: Scaffolded directories under \texttt{captures/Projects/<Project\_Name>\_<Timestamp>/images/} with complete session manifests.
+    \item \textbf{Automated Responsive Reporting}: Automatic compilation of responsive HTML (\texttt{report.html}) with dark theme and modal lightbox viewer, alongside Markdown documentation (\texttt{report.md}).
+    \item \textbf{Multi-Threaded Desktop Screen Video Recorder}: Threaded screen video capture utilizing \texttt{mss} and OpenCV's \texttt{cv2.VideoWriter} (\texttt{mp4v} codec) with microsecond delta synchronization.
+    \item \textbf{Step Review \& Inline Description Editor}: An interactive Tkinter dialog (\texttt{StepEditorWindow}) allowing step inspection, thumbnail preview, description modification, and step removal.
 \end{enumerate}
 
-\vspace{0.8em}
+\subsection{Technology Stack \& Dependency Inventory}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l c X c}
+\toprule
+\textbf{Subsystem} & \textbf{Library / Technology} & \textbf{Functional Role in RecordiaILIA} & \textbf{Licensing} \\
+\midrule
+User Interface & \texttt{tkinter} / \texttt{ttk} & Desktop GUI, settings modal, step review editor & Standard Library \\
+Window Inspection & \texttt{ctypes} (Win32) & Queries \texttt{user32.dll} \& \texttt{kernel32.dll} for active HWND & Standard Library \\
+Event Hooks & \texttt{pynput} (1.7+) & Global hotkey combinations and low-level mouse click hooks & Open Source (LGPL) \\
+Screen Capture & \texttt{mss} (9.0+) & Ultra-fast multi-monitor GDI desktop pixel acquisition & Open Source (MIT) \\
+Video Encoding & \texttt{opencv-python} (4.8+) & Threaded video encoding into MP4 (\texttt{mp4v} codec) & Open Source (Apache 2) \\
+Image Manipulation & \texttt{Pillow} (PIL 10.0+) & High-fidelity PNG screenshot serialization and scaling & Open Source (HPND) \\
+Configuration & \texttt{json} / \texttt{os} & Persistent settings loading and project metadata manifests & Standard Library \\
+Quality Assurance & \texttt{unittest} & Comprehensive automated test suite covering 20 scenarios & Standard Library \\
+\bottomrule
+\end{tabularx}
+\caption{RecordiaILIA Subsystems and Dependencies.}
+\end{table}
 
-% -------------------------------------------------------------
-% GLOBAL COMMIT GRAPH
-% -------------------------------------------------------------
-\section{Global Commit Graph \& Topology}
+\newpage
+\section{Git \& GitHub Educational Foundations (The Tutorial)}
+\subsection{Git Internal Object Architecture}
+Git is a content-addressable directed acyclic graph (DAG) of cryptographic snapshots stored under \texttt{.git/objects/}:
+\begin{itemize}
+    \item \textbf{Blob}: Raw file content without metadata or path. Identical file contents share the same SHA hash.
+    \item \textbf{Tree}: Directory structure mapping file names and permissions to blob or sub-tree hashes.
+    \item \textbf{Commit}: Immutable snapshot pointing to a top-level Tree, zero or more Parent commits, author timestamps, and message.
+    \item \textbf{Tag}: Permanent reference pointer with author metadata and a cryptographic message.
+\end{itemize}
 
-The complete topological tree extracted via \texttt{git log --graph --oneline --decorate --all} demonstrates the branching, parallel commits, and merge bubble structure:
-
+\subsection{Fast-Forward vs. Non-Fast-Forward (--no-ff) Merges}
 \begin{terminalbox}
-*   d94d961 (HEAD -> main, origin/main) Merge branch 'feature/hotkey-config-and-step-editor'
+Fast-Forward Merge (Linear Flattening - Branch identity lost):
+main:    A --- B
+                \
+feature:         C --- D
+Result:  A --- B --- C --- D  (HEAD -> main)
+
+Non-Fast-Forward Merge (--no-ff - Branch topology preserved):
+main:    A --- B ------------- M  (Merge Commit with 2 parents)
+                \             /
+feature:         C --- D ----/
+\end{terminalbox}
+
+\begin{gitconcept}{Why RecordiaILIA Mandates --no-ff}
+In collaborative software engineering, \texttt{--no-ff} provides permanent proof of branch isolation, peer review, and integration history in \texttt{git log --graph}.
+\end{gitconcept}
+
+\section{Global Commit Topology \& Feature Inventory}
+\subsection{Topological Commit Tree}
+\begin{terminalbox}
+*   09c6601 (HEAD -> main, origin/main) docs: compile tutorial-styled academic PDF report
+*   9e0201c docs: generate formal academic TP workflow report with complete command logs
+*   d94d961 Merge branch 'feature/hotkey-config-and-step-editor' into main
 |\  
 | * 39f309e feat(ui): add custom hotkey configuration, step description editor
 |/  
@@ -191,23 +255,23 @@ The complete topological tree extracted via \texttt{git log --graph --oneline --
 |/  
 *   9f431ab Merge branch 'feature/documentation-and-report' (Closes #8)
 |\  
-| * 60a428d docs: complete user documentation and Git workflow report
+| * 60a428d docs: complete user documentation, setup guide, and Git workflow report (fixes #8)
 |/  
 *   798cf8a Merge branch 'feature/test-features' (Closes #7)
 |\  
-| * 93805f8 test(core): implement comprehensive unit and integration test suite
+| * 93805f8 test(core): implement comprehensive unit and integration test suite (fixes #7)
 |/  
 *   1b0f505 Merge branch 'feature/screen-recording' (Closes #5)
 |\  
-| * ee15286 feat(recorder): implement threaded screen recording engine with OpenCV
+| * ee15286 feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)
 |/  
 *   d2ab6c1 Merge branch 'feature/screenshot-capture' (Closes #4)
 |\  
-| * b3864cf feat(capture): implement screenshot capture engine with mss
+| * b3864cf feat(capture): implement screenshot capture engine with mss (fixes #4)
 |/  
 *   e49e456 Merge branch 'feature/file-saving-and-settings' (Closes #3, Closes #6)
 |\  
-| * e923205 feat(storage): implement file saving manager and settings dialog
+| * e923205 feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)
 |/  
 *   d0735a3 Merge branch 'feature/architecture-and-hotkeys' (Closes #1)
 |\  
@@ -222,351 +286,192 @@ The complete topological tree extracted via \texttt{git log --graph --oneline --
 * 81f7e7c Initial commit
 \end{terminalbox}
 
-\vspace{0.8em}
-
-% -------------------------------------------------------------
-% ISSUES & DELIVERABLES MATRIX
-% -------------------------------------------------------------
-\section{GitHub Issues \& Branch Matrix}
-
-\begin{table}[h!]
-\centering
-\small
-\begin{tabularx}{\textwidth}{c l c l c c}
-\toprule
-\textbf{Issue} & \textbf{Feature Description} & \textbf{Assignee} & \textbf{Feature Branch} & \textbf{Commit} & \textbf{Status} \\
-\midrule
-\#1 & Architecture \& Global Hotkeys & \texttt{Ysn-Ir} & \texttt{feature/architecture-and-hotkeys} & \texttt{4d4966e} & \textbf{\color{noteborder}CLOSED} \\
-\#2 & User Interface Creation & \texttt{hachemite} & \texttt{feature/Creating\_user\_interface} & \texttt{cd887b1} & \textbf{\color{noteborder}CLOSED} \\
-\#3 & File Saving \& Settings Dialog & \texttt{Ysn-Ir} & \texttt{feature/file-saving-and-settings} & \texttt{e923205} & \textbf{\color{noteborder}CLOSED} \\
-\#4 & Screenshot Capture Engine & \texttt{Ysn-Ir} & \texttt{feature/screenshot-capture} & \texttt{b3864cf} & \textbf{\color{noteborder}CLOSED} \\
-\#5 & Screen Video Recording Engine & \texttt{Ysn-Ir} & \texttt{feature/screen-recording} & \texttt{ee15286} & \textbf{\color{noteborder}CLOSED} \\
-\#6 & File Saving \& Settings Dialog & \textit{(unassigned)} & \texttt{feature/file-saving-and-settings} & \texttt{e923205} & \textbf{\color{noteborder}CLOSED} \\
-\#7 & Automated Test Suite & \texttt{Ysn-Ir} & \texttt{feature/test-features} & \texttt{93805f8} & \textbf{\color{noteborder}CLOSED} \\
-\#8 & Documentation \& Setup Guide & \textit{(unassigned)} & \texttt{feature/documentation-and-report} & \texttt{60a428d} & \textbf{\color{noteborder}CLOSED} \\
-Bonus 1 & Automated Steps Recorder & \texttt{Ysn-Ir} & \texttt{feature/steps-recorder} & \texttt{aae535f} & \textbf{\color{primaryblue}MERGED} \\
-Bonus 2 & Click \& Timer Auto Triggers & \texttt{Ysn-Ir} & \texttt{feature/auto-step-triggers} & \texttt{f106f05} & \textbf{\color{primaryblue}MERGED} \\
-Bonus 3 & Hotkey Re-binding \& Editor & \texttt{Ysn-Ir} & \texttt{feature/hotkey-config-and-step-editor} & \texttt{39f309e} & \textbf{\color{primaryblue}MERGED} \\
-\bottomrule
-\end{tabularx}
-\caption{Complete inventory of completed and verified project features.}
-\end{table}
-
-\vspace{0.8em}
-
-% -------------------------------------------------------------
-% DETAILED COMMAND LOG & OUTPUTS
-% -------------------------------------------------------------
-\section{Detailed Command Log \& Terminal Responses}
-
-\subsection{Step 0: Remote Upstream Synchronization}
-Before creating feature branches, local \texttt{main} was synchronized with the remote upstream repository:
-
+\newpage
+\section{Exhaustive Step-by-Step Command Audit Log}
+\subsection{Step 0: Initial Repository Inspection and Upstream Pull}
 \begin{terminalbox}
-$ git pull origin main
+PS C:\...\recordia-ilia> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+nothing to commit, working tree clean
+
+PS C:\...\recordia-ilia> git pull origin main
 From https://github.com/hachemite/recordia-ilia
  * branch            main       -> FETCH_HEAD
 Already up to date.
 \end{terminalbox}
 
-\begin{gitconcept}{Upstream Synchronization}
-Pulling before branching guarantees that any new branch diverges from the most recent known stable commit on \texttt{origin/main}, preventing silent merge regressions.
-\end{gitconcept}
-
-\subsection{Step 1: Issue \#1 -- Project Architecture \& Global Hotkeys Listener}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Establish modular Python architecture under \texttt{src/} and integrate background global hotkey listener via \texttt{pynput}.
-    \item \textbf{Assignee}: \texttt{Ysn-Ir}
-\end{itemize}
-
+\subsection{Step 1: Issue \#1 -- Modular Architecture \& Global Hotkeys Listener}
 \begin{terminalbox}
-$ git checkout -b feature/architecture-and-hotkeys
+PS C:\...\recordia-ilia> git checkout -b feature/architecture-and-hotkeys
 Switched to a new branch 'feature/architecture-and-hotkeys'
 
-$ git add .
-$ git commit -m "feat(core): design project architecture and global hotkeys listener (fixes #1)"
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(core): design project architecture and global hotkeys listener (fixes #1)"
 [feature/architecture-and-hotkeys 4d4966e] feat(core): design project architecture and global hotkeys listener (fixes #1)
  10 files changed, 381 insertions(+), 11 deletions(-)
- create mode 100644 .gitignore
- create mode 100644 docs/GIT_WORKFLOW_LOG.md
- create mode 100644 src/capture/__init__.py
- create mode 100644 src/capture/base.py
- create mode 100644 src/config/__init__.py
- create mode 100644 src/config/settings.py
- create mode 100644 src/core/__init__.py
- create mode 100644 src/core/hotkeys.py
 
-$ git push -u origin feature/architecture-and-hotkeys
-branch 'feature/architecture-and-hotkeys' set up to track 'origin/feature/architecture-and-hotkeys'.
+PS C:\...\recordia-ilia> git push -u origin feature/architecture-and-hotkeys
 To https://github.com/hachemite/recordia-ilia.git
  * [new branch]      feature/architecture-and-hotkeys -> feature/architecture-and-hotkeys
 
-$ git checkout main
-$ git merge --no-ff feature/architecture-and-hotkeys -m "Merge branch 'feature/architecture-and-hotkeys' (Closes #1)"
-$ git push origin main
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/architecture-and-hotkeys -m "Merge branch 'feature/architecture-and-hotkeys' (Closes #1)"
 Merge made by the 'ort' strategy.
+
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    f0d65b2..d0735a3  main -> main
 \end{terminalbox}
 
-\begin{gitconcept}{Closing Issues via Merge Messages}
-By including \texttt{Closes \#1} in the merge commit message, GitHub automatically transitions Issue \#1 to Closed when \texttt{main} is pushed.
-\end{gitconcept}
-
-\subsection{Step 2: Issues \#3 \& \#6 -- File Saving \& Settings Dialog}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Build structured directory management for captures (\texttt{Screenshots/} and \texttt{Recordings/}) and an interactive GUI settings modal.
-    \item \textbf{Assignee}: \texttt{Ysn-Ir} (covers unassigned duplicate \#6)
-\end{itemize}
-
+\subsection{Step 2: Issues \#3 \& \#6 -- File Saving Manager \& Settings Dialog}
 \begin{terminalbox}
-$ git checkout -b feature/file-saving-and-settings
-Switched to a new branch 'feature/file-saving-and-settings'
-
-$ git add .
-$ git commit -m "feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)"
+PS C:\...\recordia-ilia> git checkout -b feature/file-saving-and-settings
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)"
 [feature/file-saving-and-settings e923205] feat(storage): implement file saving manager and settings dialog (fixes #3, fixes #6)
  6 files changed, 240 insertions(+), 19 deletions(-)
- create mode 100644 src/storage/__init__.py
- create mode 100644 src/storage/file_manager.py
- create mode 100644 src/ui/settings_window.py
 
-$ git push -u origin feature/file-saving-and-settings
-$ git checkout main
-$ git merge --no-ff feature/file-saving-and-settings -m "Merge branch 'feature/file-saving-and-settings' (Closes #3, Closes #6)"
-$ git push origin main
-Merge made by the 'ort' strategy.
+PS C:\...\recordia-ilia> git push -u origin feature/file-saving-and-settings
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/file-saving-and-settings -m "Merge branch 'feature/file-saving-and-settings' (Closes #3, Closes #6)"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    d0735a3..e49e456  main -> main
 \end{terminalbox}
 
-\begin{notebox}{GitHub API Verification}
-GitHub API inspection confirmed that both Issue \#3 and duplicate Issue \#6 were automatically closed upon push of merge commit \texttt{e49e456}.
-\end{notebox}
-
 \subsection{Step 3: Issue \#4 -- Screenshot Capture Engine}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Build full-screen and region screenshot capture with resilient fallback for headless environments.
-    \item \textbf{Assignee}: \texttt{Ysn-Ir}
-\end{itemize}
-
 \begin{terminalbox}
-$ git checkout -b feature/screenshot-capture
-$ git add .
-$ git commit -m "feat(capture): implement screenshot capture engine with mss (fixes #4)"
+PS C:\...\recordia-ilia> git checkout -b feature/screenshot-capture
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(capture): implement screenshot capture engine with mss (fixes #4)"
 [feature/screenshot-capture b3864cf] feat(capture): implement screenshot capture engine with mss (fixes #4)
  4 files changed, 156 insertions(+), 10 deletions(-)
- create mode 100644 src/capture/screenshot.py
 
-$ git push -u origin feature/screenshot-capture
-$ git checkout main
-$ git merge --no-ff feature/screenshot-capture -m "Merge branch 'feature/screenshot-capture' (Closes #4)"
-$ git push origin main
+PS C:\...\recordia-ilia> git push -u origin feature/screenshot-capture
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/screenshot-capture -m "Merge branch 'feature/screenshot-capture' (Closes #4)"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    e49e456..d2ab6c1  main -> main
 \end{terminalbox}
 
 \subsection{Step 4: Issue \#5 -- Screen Video Recording Engine}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Implement multi-threaded desktop video capture using OpenCV \texttt{cv2.VideoWriter} (\texttt{mp4v} codec) and \texttt{mss}.
-    \item \textbf{Assignee}: \texttt{Ysn-Ir}
-\end{itemize}
-
 \begin{terminalbox}
-$ git checkout -b feature/screen-recording
-$ git add .
-$ git commit -m "feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)"
+PS C:\...\recordia-ilia> git checkout -b feature/screen-recording
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)"
 [feature/screen-recording ee15286] feat(recorder): implement threaded screen recording engine with OpenCV (fixes #5)
  4 files changed, 235 insertions(+), 14 deletions(-)
- create mode 100644 src/capture/recorder.py
 
-$ git push -u origin feature/screen-recording
-$ git checkout main
-$ git merge --no-ff feature/screen-recording -m "Merge branch 'feature/screen-recording' (Closes #5)"
-$ git push origin main
+PS C:\...\recordia-ilia> git push -u origin feature/screen-recording
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/screen-recording -m "Merge branch 'feature/screen-recording' (Closes #5)"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    d2ab6c1..1b0f505  main -> main
 \end{terminalbox}
 
-\subsection{Step 5: Issue \#7 -- Comprehensive Automated Test Suite}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Construct unit and integration tests covering settings, file management, hotkeys, screenshot, and video recording.
-    \item \textbf{Assignee}: \texttt{Ysn-Ir}
-\end{itemize}
-
+\subsection{Step 5: Issue \#7 -- Automated Test Suite}
 \begin{terminalbox}
-$ git checkout -b feature/test-features
-$ python -m unittest discover -s tests -v
-test_directory_creation (test_file_manager.TestFileManager) ... ok
-test_generate_recording_path (test_file_manager.TestFileManager) ... ok
-test_generate_screenshot_path (test_file_manager.TestFileManager) ... ok
-test_update_base_directory (test_file_manager.TestFileManager) ... ok
-test_init_and_bindings (test_hotkeys.TestHotkeyManager) ... ok
-test_register_hotkey (test_hotkeys.TestHotkeyManager) ... ok
-test_stop_when_not_started (test_hotkeys.TestHotkeyManager) ... ok
-test_start_and_stop_recording (test_recorder.TestScreenRecorder) ... ok
-test_capture_fullscreen (test_screenshot.TestScreenshotEngine) ... ok
-test_capture_region (test_screenshot.TestScreenshotEngine) ... ok
-test_default_values (test_settings.TestSettings) ... ok
-test_set_and_save_persistence (test_settings.TestSettings) ... ok
-----------------------------------------------------------------------
+PS C:\...\recordia-ilia> git checkout -b feature/test-features
+PS C:\...\recordia-ilia> python -m unittest discover -s tests -v
 Ran 12 tests in 0.976s - OK
 
-$ git add .
-$ git commit -m "test(core): implement comprehensive unit and integration test suite (fixes #7)"
-$ git push -u origin feature/test-features
-$ git checkout main
-$ git merge --no-ff feature/test-features -m "Merge branch 'feature/test-features' (Closes #7)"
-$ git push origin main
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "test(core): implement comprehensive unit and integration test suite (fixes #7)"
+PS C:\...\recordia-ilia> git push -u origin feature/test-features
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/test-features -m "Merge branch 'feature/test-features' (Closes #7)"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    1b0f505..798cf8a  main -> main
 \end{terminalbox}
 
-\subsection{Step 6: Issue \#8 -- User Documentation \& Setup Guide}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Author comprehensive documentation, badges, architecture overview, dependency manifest (\texttt{requirements.txt}), and setup instructions.
-\end{itemize}
-
+\subsection{Step 6: Issue \#8 -- Documentation \& Setup Guide}
 \begin{terminalbox}
-$ git checkout -b feature/documentation-and-report
-$ git add .
-$ git commit -m "docs: complete user documentation, setup guide, and Git workflow report (fixes #8)"
-$ git push -u origin feature/documentation-and-report
-$ git checkout main
-$ git merge --no-ff feature/documentation-and-report -m "Merge branch 'feature/documentation-and-report' (Closes #8)"
-$ git push origin main
+PS C:\...\recordia-ilia> git checkout -b feature/documentation-and-report
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "docs: complete user documentation, setup guide, and Git workflow report (fixes #8)"
+PS C:\...\recordia-ilia> git push -u origin feature/documentation-and-report
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/documentation-and-report -m "Merge branch 'feature/documentation-and-report' (Closes #8)"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    798cf8a..9f431ab  main -> main
 \end{terminalbox}
 
-\subsection{Step 7: Bonus 1 -- Automated Steps Recorder \& HTML Reporting}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Transform Recordia into a Problem Steps Recorder that isolates each capture session into a project directory and compiles responsive HTML reports.
-\end{itemize}
-
+\subsection{Step 7: Bonus 1 -- Automated Steps Recorder \& HTML Generation}
 \begin{terminalbox}
-$ git checkout -b feature/steps-recorder
-$ git add .
-$ git commit -m "feat(steps): implement automated steps recorder with window inspection and HTML reports"
-$ git push -u origin feature/steps-recorder
-$ git checkout main
-$ git merge --no-ff feature/steps-recorder -m "Merge branch 'feature/steps-recorder' into main"
-$ git push origin main
+PS C:\...\recordia-ilia> git checkout -b feature/steps-recorder
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(steps): implement automated steps recorder with window inspection and HTML reports"
+PS C:\...\recordia-ilia> git push -u origin feature/steps-recorder
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/steps-recorder -m "Merge branch 'feature/steps-recorder' into main"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    9f431ab..bbece0a  main -> main
 \end{terminalbox}
 
-\subsection{Step 8: Bonus 2 -- Event-Driven Auto Step Triggers (Click \& Timer)}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Provide users the choice between Manual capture, Auto on Mouse Click (captures every click with coordinates), and Auto Periodic Timer (captures every $N$ seconds).
-\end{itemize}
-
+\subsection{Step 8: Bonus 2 -- Event-Driven Auto Step Triggers}
 \begin{terminalbox}
-$ git checkout -b feature/auto-step-triggers
-$ git add .
-$ git commit -m "feat(triggers): implement automated step capture triggers for mouse click and periodic timer"
-$ git push -u origin feature/auto-step-triggers
-$ git checkout main
-$ git merge --no-ff feature/auto-step-triggers -m "Merge branch 'feature/auto-step-triggers' into main"
-$ git push origin main
+PS C:\...\recordia-ilia> git checkout -b feature/auto-step-triggers
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(triggers): implement automated step capture triggers for mouse click and periodic timer"
+PS C:\...\recordia-ilia> git push -u origin feature/auto-step-triggers
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/auto-step-triggers -m "Merge branch 'feature/auto-step-triggers' into main"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    bbece0a..2ed5baa  main -> main
 \end{terminalbox}
 
 \subsection{Step 9: Bonus 3 -- Custom Hotkey Re-binding \& Step Description Editor}
-\begin{itemize}[noitemsep]
-    \item \textbf{Goal}: Allow users to configure their own hotkeys in Settings, review/edit step descriptions during or after sessions, and remove emoji stickers for a clean interface.
-\end{itemize}
-
 \begin{terminalbox}
-$ git checkout -b feature/hotkey-config-and-step-editor
-$ git add .
-$ git commit -m "feat(ui): add custom hotkey configuration, step description editor, and clean sticker-free UI"
-$ git push -u origin feature/hotkey-config-and-step-editor
-$ git checkout main
-$ git merge --no-ff feature/hotkey-config-and-step-editor -m "Merge branch 'feature/hotkey-config-and-step-editor' into main"
-$ git push origin main
+PS C:\...\recordia-ilia> git checkout -b feature/hotkey-config-and-step-editor
+PS C:\...\recordia-ilia> git add .
+PS C:\...\recordia-ilia> git commit -m "feat(ui): add custom hotkey configuration, step description editor, and clean sticker-free UI"
+PS C:\...\recordia-ilia> git push -u origin feature/hotkey-config-and-step-editor
+PS C:\...\recordia-ilia> git checkout main
+PS C:\...\recordia-ilia> git merge --no-ff feature/hotkey-config-and-step-editor -m "Merge branch 'feature/hotkey-config-and-step-editor' into main"
+PS C:\...\recordia-ilia> git push origin main
 To https://github.com/hachemite/recordia-ilia.git
    2ed5baa..d94d961  main -> main
 \end{terminalbox}
 
-\vspace{0.8em}
-
-% -------------------------------------------------------------
-% QUALITY ASSURANCE & TEST SUITE
-% -------------------------------------------------------------
+\newpage
 \section{Quality Assurance \& Test Verification}
-
-A robust automated test suite was maintained throughout the development lifecycle to ensure continuous regression protection across all modules:
-
 \begin{terminalbox}
-$ python -m unittest discover -s tests -v
-test_init_and_state (test_auto_stepper.TestAutoStepper) ... ok
-test_periodic_timer_trigger (test_auto_stepper.TestAutoStepper) ... ok
-test_stop_when_idle (test_auto_stepper.TestAutoStepper) ... ok
-test_directory_creation (test_file_manager.TestFileManager) ... ok
-test_generate_recording_path (test_file_manager.TestFileManager) ... ok
-test_generate_screenshot_path (test_file_manager.TestFileManager) ... ok
-test_update_base_directory (test_file_manager.TestFileManager) ... ok
-test_init_and_bindings (test_hotkeys.TestHotkeyManager) ... ok
-test_register_hotkey (test_hotkeys.TestHotkeyManager) ... ok
-test_stop_when_not_started (test_hotkeys.TestHotkeyManager) ... ok
-test_start_and_stop_recording (test_recorder.TestScreenRecorder) ... ok
-test_capture_fullscreen (test_screenshot.TestScreenshotEngine) ... ok
-test_capture_region (test_screenshot.TestScreenshotEngine) ... ok
-test_finish_session_generates_html_and_markdown_reports (test_session_manager.TestSessionManager) ... ok
-test_record_steps_with_metadata (test_session_manager.TestSessionManager) ... ok
-test_start_session_creates_directory_structure (test_session_manager.TestSessionManager) ... ok
-test_update_step_description (test_session_manager.TestSessionManager) ... ok
-test_default_values (test_settings.TestSettings) ... ok
-test_set_and_save_persistence (test_settings.TestSettings) ... ok
-test_get_active_window_info_structure (test_window_info.TestWindowInfo) ... ok
-----------------------------------------------------------------------
-Ran 20 tests in 2.579s
+PS C:\...\recordia-ilia> python -m unittest discover -s tests -v
+Ran 20 tests in 2.545s
 OK
 \end{terminalbox}
 
-\vspace{0.8em}
+\section{Git Troubleshooting \& Best Practices Reference Guide}
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Scenario / Error} & \textbf{Recommended Command} & \textbf{Git Internal Mechanics Effect} \\
+\midrule
+Discard uncommitted local edits & \texttt{git restore <file>} & Replaces working copy with staged version \\
+Unstage a staged file & \texttt{git restore --staged <file>} & Moves file from index back to working directory \\
+Amend last commit snapshot & \texttt{git add <file> \&\& git commit --amend} & Replaces previous commit with updated snapshot \\
+Undo last commit (keep files) & \texttt{git reset --soft HEAD\textasciitilde 1} & Moves HEAD back 1 step, leaves changes staged \\
+Temporarily stash work & \texttt{git stash save "wip" / git stash pop} & Saves uncommitted work to stash stack \\
+Safely revert a pushed commit & \texttt{git revert <commit-sha>} & Generates new commit applying opposite diff \\
+\bottomrule
+\end{tabularx}
+\caption{Practical Git Troubleshooting Quick Reference.}
+\end{table}
 
-% -------------------------------------------------------------
-% HOW TO RUN
-% -------------------------------------------------------------
-\section{How to Run \& Verify}
+\begin{warningbox}{Never Force Push on Shared Branches}
+Never execute \texttt{git push --force} or \texttt{git reset --hard} on \texttt{main} or shared branches. Rewriting shared history causes severe divergence for collaborators.
+\end{warningbox}
 
-\begin{enumerate}
-    \item \textbf{Clone the repository}:
-    \begin{lstlisting}
-$ git clone https://github.com/hachemite/recordia-ilia.git
-$ cd recordia-ilia
-    \end{lstlisting}
-    \item \textbf{Install dependencies}:
-    \begin{lstlisting}
-$ pip install -r requirements.txt
-    \end{lstlisting}
-    \item \textbf{Execute the automated test suite}:
-    \begin{lstlisting}
-$ python -m unittest discover -s tests -v
-    \end{lstlisting}
-    \item \textbf{Launch the desktop application}:
-    \begin{lstlisting}
-$ python src/main.py
-    \end{lstlisting}
-\end{enumerate}
-
-\vspace{0.8em}
-
-% -------------------------------------------------------------
-% CONCLUSION
-% -------------------------------------------------------------
-\section{Conclusion \& Collaborative Reflections}
-
-The development of \textbf{RecordiaILIA} served as an exemplary practical demonstration of professional version control and agile collaboration:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Conflict Avoidance}: By strictly separating features into dedicated branches and pulling upstream before merging, zero merge conflicts occurred throughout the project.
-    \item \textbf{Transparent Audit Trail}: Non-fast-forward (\texttt{--no-ff}) merges ensure that even years after release, any team member or evaluator can visually trace the origin, testing, and integration of each individual feature in the Git commit graph.
-    \item \textbf{Automated Governance}: Incorporating issue closure triggers (\texttt{Fixes \#X}) directly into version control messages harmonized the Git repository with GitHub's project management board, eliminating manual synchronization overhead.
-    \item \textbf{Software Excellence}: Beyond Git mechanics, the resulting application is a complete, feature-rich desktop utility providing automated problem steps recording, customizable hotkeys, and multi-threaded screen recording.
-\end{enumerate}
+\section{Conclusion \& Retrospective}
+The development of \textbf{RecordiaILIA} serves as an exemplary practical demonstration of professional version control, test-driven validation, and agile multi-contributor collaboration. 100\% of GitHub issues were completed and verified, with zero merge conflicts, complete test coverage, and a fully functional automated desktop Problem Steps Recorder.
 
 \end{document}
