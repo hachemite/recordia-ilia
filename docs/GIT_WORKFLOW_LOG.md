@@ -67,3 +67,36 @@ Switched to a new branch 'feature/architecture-and-hotkeys'
 - Created `src/capture/base.py` defining abstract base classes `BaseScreenshotEngine` and `BaseRecordingEngine`.
 - Refactored `src/ui/main_window.py` to support thread-safe status updates via `root.after` and graceful application shutdown callbacks.
 - Updated `src/main.py` with `RecordiaApp` orchestrator binding settings, UI, and hotkeys.
+
+#### 2.3 Staging and Committing
+**Action**: Stage all newly created architecture and core modules, and commit using Conventional Commits syntax linking Issue #1.
+```bash
+git add .
+git commit -m "feat(core): design project architecture and global hotkeys listener (fixes #1)"
+```
+**Terminal Output**:
+```text
+[feature/architecture-and-hotkeys 4d4966e] feat(core): design project architecture and global hotkeys listener (fixes #1)
+ 10 files changed, 381 insertions(+), 11 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 docs/GIT_WORKFLOW_LOG.md
+ create mode 100644 src/capture/__init__.py
+ create mode 100644 src/capture/base.py
+ create mode 100644 src/config/__init__.py
+ create mode 100644 src/config/settings.py
+ create mode 100644 src/core/__init__.py
+ create mode 100644 src/core/hotkeys.py
+```
+
+#### 2.4 Publishing Feature Branch Upstream
+**Action**: Push feature branch to `origin` and establish tracking.
+```bash
+git push -u origin feature/architecture-and-hotkeys
+```
+**Terminal Output**:
+```text
+branch 'feature/architecture-and-hotkeys' set up to track 'origin/feature/architecture-and-hotkeys'.
+To https://github.com/hachemite/recordia-ilia.git
+ * [new branch]      feature/architecture-and-hotkeys -> feature/architecture-and-hotkeys
+```
+
