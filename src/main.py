@@ -1,6 +1,6 @@
 """
 Main entry point for RecordiaILIA application.
-Integrates UI, settings, file manager, hotkeys, and capture engines.
+Integrates UI, settings, file manager, hotkeys, screenshot, and screen recording engines.
 """
 
 import sys
@@ -13,6 +13,7 @@ from config.settings import Settings
 from core.hotkeys import HotkeyManager
 from storage.file_manager import FileManager
 from capture.screenshot import ScreenshotEngine
+from capture.recorder import ScreenRecorder
 from ui.main_window import MainWindow
 from ui.settings_window import SettingsWindow
 
@@ -25,9 +26,13 @@ class RecordiaApp:
             self.file_manager,
             default_format=self.settings.get("screenshot_format", "png")
         )
-        self.is_recording = False
+        self.recorder = ScreenRecorder(
+            self.file_manager,
+            fps=int(self.settings.get("video_fps", 30)),
+            video_format=self.settings.get("video_format", "mp4")
+        )
 
-        # Placeholder callbacks (to be linked with video engine)
+        # Callbacks
         self.screenshot_callback = self._handle_screenshot
         self.start_record_callback = self._handle_start_record
         self.stop_record_callback = self._handle_stop_record
@@ -56,6 +61,7 @@ class RecordiaApp:
         new_dir = self.settings.get("save_directory")
         self.file_manager.set_base_directory(new_dir)
         self.screenshot_engine.default_format = self.settings.get("screenshot_format", "png")
+        self.recorder.fps = int(self.settings.get("video_fps", 30))
         self.window.set_status("Settings updated")
 
     def _open_captures_folder(self):
@@ -71,13 +77,19 @@ class RecordiaApp:
         return saved_file
 
     def _handle_start_record(self):
-        filepath = self.file_manager.generate_recording_path(self.settings.get("video_format", "mp4"))
-        print(f"[Recordia] Recording started target: {filepath}")
-        self.is_recording = True
+        if not self.recorder.is_recording:
+            target = self.recorder.start_recording()
+            print(f"[Recordia] Recording started target: {target}")
+            self.window.set_status("Recording in progress...")
 
     def _handle_stop_record(self):
-        print("[Recordia] Recording stopped.")
-        self.is_recording = False
+        if self.recorder.is_recording:
+            saved_file = self.recorder.stop_recording()
+            filename = os.path.basename(saved_file)
+            print(f"[Recordia] Recording saved to: {saved_file}")
+            self.window.set_status(f"Video saved: {filename}")
+        else:
+            self.window.set_status("Ready")
 
     def _on_hotkey_screenshot(self):
         print("[Recordia] Hotkey detected: Screenshot")
@@ -87,12 +99,10 @@ class RecordiaApp:
 
     def _on_hotkey_toggle_record(self):
         print("[Recordia] Hotkey detected: Toggle Recording")
-        if not self.is_recording:
+        if not self.recorder.is_recording:
             self._handle_start_record()
-            self.window.set_status("Recording... (Hotkey)")
         else:
             self._handle_stop_record()
-            self.window.set_status("Recording stopped (Hotkey)")
 
     def run(self):
         self.hotkeys.start()
@@ -102,6 +112,8 @@ class RecordiaApp:
             self.cleanup()
 
     def cleanup(self):
+        if hasattr(self, "recorder") and self.recorder.is_recording:
+            self.recorder.stop_recording()
         if hasattr(self, "hotkeys") and self.hotkeys.is_running:
             self.hotkeys.stop()
 
