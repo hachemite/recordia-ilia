@@ -4,6 +4,7 @@ import os
 import shutil
 import tempfile
 import unittest
+import unittest.mock
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -31,6 +32,13 @@ class TestScreenshotEngine(unittest.TestCase):
         saved_path = self.engine.capture_region(bbox=(10, 10, 200, 200))
         self.assertTrue(os.path.exists(saved_path))
         self.assertGreater(os.path.getsize(saved_path), 0)
+
+    def test_capture_fails_loudly_when_backends_unavailable(self):
+        """Issue #9: no fake fallback image; RuntimeError must be raised."""
+        with unittest.mock.patch("PIL.ImageGrab.grab", side_effect=OSError("no display")), \
+             unittest.mock.patch("capture.screenshot.mss.MSS", side_effect=OSError("no mss")):
+            with self.assertRaises(RuntimeError):
+                self.engine.capture_fullscreen()
 
 
 if __name__ == "__main__":

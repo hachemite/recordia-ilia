@@ -4,9 +4,8 @@ Captures full-screen or region and saves to storage.
 """
 
 import os
-from datetime import datetime
 from typing import Optional, Tuple
-from PIL import Image, ImageDraw, ImageGrab
+from PIL import Image, ImageGrab
 import mss
 
 from capture.base import BaseScreenshotEngine
@@ -46,8 +45,9 @@ class ScreenshotEngine(BaseScreenshotEngine):
 
     def _grab_screen(self) -> Image.Image:
         """
-        Attempt to capture the screen via ImageGrab or mss.
-        Falls back gracefully if running in a headless or locked environment.
+        Attempt to capture the screen via ImageGrab, falling back to mss.
+        Raises RuntimeError if both capture backends fail — never returns
+        a fake/synthetic image.
         """
         try:
             img = ImageGrab.grab(all_screens=True)
@@ -64,9 +64,7 @@ class ScreenshotEngine(BaseScreenshotEngine):
         except Exception:
             pass
 
-        # Fallback for headless/CI/virtual environments
-        fallback_img = Image.new("RGB", (1920, 1080), color=(34, 40, 49))
-        draw = ImageDraw.Draw(fallback_img)
-        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        draw.text((80, 80), f"RecordiaILIA Screenshot Capture\nTimestamp: {ts}\n[Headless / CI Environment]", fill=(238, 238, 238))
-        return fallback_img
+        raise RuntimeError(
+            "Screen capture failed: both ImageGrab and mss backends are unavailable. "
+            "No screenshot was saved."
+        )
